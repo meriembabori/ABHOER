@@ -23,7 +23,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #1a7a86, #2fa9b0);
+            background: linear-gradient(135deg, #0d6e6e, #25a6a6);
             color: white;
             padding: 18px 35px;
 
@@ -39,7 +39,7 @@
 
         .logout button {
             background: white;
-            color: #1a7a86;
+            color: #0d6e6e;
             border: none;
 
             padding: 10px 20px;
@@ -67,7 +67,7 @@
         }
 
         h2 {
-            color: #1a7a86;
+            color: #0d6e6e;
             margin-top: 0;
         }
 
@@ -77,7 +77,7 @@
         }
 
         .section-title {
-            color: #1a7a86;
+            color: #0d6e6e;
 
             border-bottom:
                 2px solid #e2e8f0;
@@ -122,7 +122,7 @@
         }
 
         .form-group input:focus {
-            border-color: #1a7a86;
+            border-color: #0d6e6e;
 
             box-shadow:
                 0 0 0 2px
@@ -144,7 +144,7 @@
 
             border-radius: 6px;
 
-            background: #1a7a86;
+            background: #0d6e6e;
 
             color: white;
 

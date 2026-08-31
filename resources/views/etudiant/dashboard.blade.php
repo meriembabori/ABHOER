@@ -1,194 +1,77 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.etudiant')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Tableau de bord')
+@section('page-title', 'Bonjour ' . ($utilisateur->prenom ?? ''))
+@section('page-subtitle', 'Suivez l\'état de vos demandes de stage')
 
-    <title>Dashboard Étudiant - ABHOER</title>
+@section('content')
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        .stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+        .stat-card .icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 19px; margin-bottom: 12px; }
+        .stat-card .label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+        .stat-card .value { font-size: 25px; font-weight: 700; color: var(--c-navy); }
+        .icon-teal { background: var(--c-teal-pale); color: var(--c-teal-dark); }
+        .icon-amber { background: #fef3c7; color: #92400e; }
+        .icon-green { background: #d1fae5; color: #065f46; }
+        .icon-red { background: #fee2e2; color: #991b1b; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
+        .empty-state { text-align: center; padding: 50px 20px; }
+        .empty-state .ico { font-size: 44px; color: var(--c-teal); margin-bottom: 14px; }
+        .empty-state p { color: #64748b; font-size: 14px; margin-bottom: 18px; }
 
-        .header {
-            background: linear-gradient(135deg, #1a7a86, #2fa9b0);
-            color: white;
-            padding: 18px 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .current-demande { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .cd-item { padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 13.5px; }
+        .cd-item span:first-child { color: #64748b; display: block; font-size: 11.5px; margin-bottom: 3px; }
+        .cd-item span:last-child { font-weight: 600; color: var(--c-navy); }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .logout button {
-            background: white;
-            color: #1a7a86;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .container {
-            width: 92%;
-            max-width: 1200px;
-            margin: 35px auto;
-        }
-
-        .welcome {
-            margin-bottom: 30px;
-        }
-
-        .welcome h2 {
-            margin-bottom: 8px;
-        }
-
-        .welcome p {
-            color: #64748b;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h3 {
-            color: #1a7a86;
-            margin-top: 0;
-        }
-
-        .card p {
-            color: #64748b;
-        }
-
-        .button {
-            display: inline-block;
-            margin-top: 10px;
-            background: #1a7a86;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        @media (max-width: 800px) {
-            .cards {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 900px) { .stat-cards { grid-template-columns: repeat(2,1fr); } .current-demande { grid-template-columns: 1fr; } }
     </style>
-</head>
 
-<body>
-
-    <header class="header">
-
-        <div style="display:flex;align-items:center;gap:12px;">
-            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" style="height:38px;background:white;border-radius:8px;padding:3px 6px;">
-            <h1 style="font-size:19px;">
-                ABHOER - Espace Étudiant
-            </h1>
+    <div class="stat-cards">
+        <div class="stat-card">
+            <div class="icon icon-teal"><i class="bi bi-file-earmark-text-fill"></i></div>
+            <div class="label">Mes demandes</div>
+            <div class="value">{{ $totalDemandes }}</div>
         </div>
-
-        <form method="POST" action="{{ route('logout') }}" class="logout">
-            @csrf
-
-            <button type="submit">
-                Se déconnecter
-            </button>
-        </form>
-
-    </header>
-
-
-    <main class="container">
-
-        <div class="welcome">
-
-            <h2>
-                Bienvenue {{ $utilisateur->prenom }} {{ $utilisateur->nom }}
-            </h2>
-
-            <p>
-                Bienvenue dans votre espace étudiant.
-            </p>
-
+        <div class="stat-card">
+            <div class="icon icon-amber"><i class="bi bi-hourglass-split"></i></div>
+            <div class="label">En cours</div>
+            <div class="value">{{ $enCours }}</div>
         </div>
-
-
-        <div class="cards">
-
-            <div class="card">
-
-                <h3>Mon profil</h3>
-
-                <p>
-                    Consulter et modifier vos informations personnelles et académiques.
-                </p>
-
-                <a href="{{ route('etudiant.profil') }}" class="button">
-                    Mon profil
-                </a>
-
-            </div>
-
-
-            <div class="card">
-
-                <h3>Nouvelle demande</h3>
-
-                <p>
-                    Créer une nouvelle demande de stage auprès de l'ABHOER.
-                </p>
-
-                <a href="{{ route('etudiant.demande.create') }}" class="button">
-    Nouvelle demande de stage
-</a>
-
-            </div>
-
-
-            <div class="card">
-
-                <h3>Mes demandes</h3>
-
-                <p>
-                    Consulter l'état et l'historique de vos demandes de stage.
-                </p>
-
-                <a href="#" class="button">
-                    Mes demandes
-                </a>
-
-            </div>
-
+        <div class="stat-card">
+            <div class="icon icon-green"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="label">Acceptées</div>
+            <div class="value">{{ $acceptees }}</div>
         </div>
+        <div class="stat-card">
+            <div class="icon icon-red"><i class="bi bi-x-circle-fill"></i></div>
+            <div class="label">Refusées</div>
+            <div class="value">{{ $refusees }}</div>
+        </div>
+    </div>
 
-    </main>
+    @if ($derniereDemande)
+        <div class="card" style="margin-bottom:22px;">
+            <h3 style="font-size:14.5px;color:var(--c-navy);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+                Ma demande actuelle — {{ $derniereDemande->numeroDemande }}
+                <span class="badge badge-{{ $derniereDemande->statut }}">{{ $derniereDemande->statut }}</span>
+            </h3>
+            <div class="current-demande">
+                <div class="cd-item"><span>Service</span><span>{{ $derniereDemande->service->nomService ?? '—' }}</span></div>
+                <div class="cd-item"><span>Type de stage</span><span>{{ $derniereDemande->typeStage ?? '—' }}</span></div>
+                <div class="cd-item"><span>Date de début</span><span>{{ $derniereDemande->dateDebut ? $derniereDemande->dateDebut->format('d/m/Y') : '—' }}</span></div>
+                <div class="cd-item"><span>Date de fin</span><span>{{ $derniereDemande->dateFin ? $derniereDemande->dateFin->format('d/m/Y') : '—' }}</span></div>
+            </div>
+            <a href="{{ route('etudiant.demande.index') }}" class="btn btn-outline" style="margin-top:16px;">Voir toutes mes demandes <i class="bi bi-arrow-right"></i></a>
+        </div>
+    @else
+        <div class="card empty-state">
+            <div class="ico"><i class="bi bi-file-earmark-x"></i></div>
+            <p>Vous n'avez encore déposé aucune demande de stage.</p>
+            <a href="{{ route('etudiant.demande.create') }}" class="btn btn-primary"><i class="bi bi-file-earmark-plus-fill"></i> Déposer ma première demande</a>
+        </div>
+    @endif
 
-</body>
-
-</html>
+@endsection

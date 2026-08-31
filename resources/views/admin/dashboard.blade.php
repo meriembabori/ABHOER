@@ -21,7 +21,7 @@
         }
 
         .navbar {
-            background: linear-gradient(135deg, #1a7a86, #2fa9b0);
+            background: linear-gradient(135deg, #0d6e6e, #25a6a6);
             color: white;
             padding: 18px 30px;
             display: flex;
@@ -35,7 +35,7 @@
 
         .logout button {
             background: white;
-            color: #1a7a86;
+            color: #0d6e6e;
             border: none;
             padding: 9px 16px;
             border-radius: 6px;
@@ -82,7 +82,7 @@
         .card .number {
             font-size: 32px;
             font-weight: bold;
-            color: #1a7a86;
+            color: #0d6e6e;
         }
 
         .card.pending .number {
@@ -203,7 +203,7 @@
 
     <div class="wave-divider">
         <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path fill="#9bd9d6" d="M0,20 C240,40 480,0 720,15 C960,30 1200,5 1440,20 L1440,40 L0,40 Z"></path>
+            <path fill="#5eead4" d="M0,20 C240,40 480,0 720,15 C960,30 1200,5 1440,20 L1440,40 L0,40 Z"></path>
         </svg>
     </div>
 

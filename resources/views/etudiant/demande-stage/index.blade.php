@@ -28,7 +28,7 @@
 
         .header {
             height: 70px;
-            background: #2fa9b0;
+            background: #25a6a6;
             color: white;
 
             display: flex;
@@ -49,7 +49,7 @@
 
         .logout-btn {
             background: white;
-            color: #2fa9b0;
+            color: #25a6a6;
 
             border: none;
             border-radius: 6px;
@@ -96,7 +96,7 @@
         /* ================= BOUTON ================= */
 
         .btn-primary {
-            background: #2fa9b0;
+            background: #25a6a6;
             color: white;
 
             text-decoration: none;
@@ -149,7 +149,7 @@
 
         .card h2 {
             margin-top: 0;
-            color: #2fa9b0;
+            color: #25a6a6;
         }
 
         /* ================= INFORMATIONS ================= */
@@ -314,7 +314,7 @@
         }
 
         .back a {
-            color: #2fa9b0;
+            color: #25a6a6;
 
             text-decoration: none;
 

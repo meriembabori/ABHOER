@@ -24,6 +24,12 @@ use App\Http\Controllers\AccueilController;
 Route::get('/', [AccueilController::class, 'index'])
     ->name('accueil');
 
+Route::get('/services', [AccueilController::class, 'services'])
+    ->name('accueil.services');
+
+Route::get('/localisation', [AccueilController::class, 'localisation'])
+    ->name('accueil.localisation');
+
 
 /*
 |--------------------------------------------------------------------------

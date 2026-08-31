@@ -21,7 +21,7 @@
         }
 
         .navbar {
-            background: linear-gradient(135deg, #1a7a86, #2fa9b0);
+            background: linear-gradient(135deg, #0d6e6e, #25a6a6);
             color: white;
             padding: 18px 30px;
             display: flex;
@@ -51,7 +51,7 @@
         }
 
         .header h2 {
-            color: #1a7a86;
+            color: #0d6e6e;
         }
 
         .btn {
@@ -65,7 +65,7 @@
         }
 
         .btn-primary {
-            background: #1a7a86;
+            background: #0d6e6e;
             color: white;
         }
 
@@ -107,7 +107,7 @@
         }
 
         th {
-            background: #1a7a86;
+            background: #0d6e6e;
             color: white;
         }
 
@@ -223,7 +223,7 @@
 
     <div class="wave-divider">
         <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path fill="#9bd9d6" d="M0,20 C240,40 480,0 720,15 C960,30 1200,5 1440,20 L1440,40 L0,40 Z"></path>
+            <path fill="#5eead4" d="M0,20 C240,40 480,0 720,15 C960,30 1200,5 1440,20 L1440,40 L0,40 Z"></path>
         </svg>
     </div>
 

@@ -3,170 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Inscription étudiant - ABHOER</title>
+    <title>Inscription - ABHOER</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --c-teal-dark: #0d6e6e;
+            --c-teal: #25a6a6;
+            --c-teal-pale: #e6f4f4;
+            --c-navy: #0f172a;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-
-        .header {
-            background: #1a7a86;
-            color: white;
-            padding: 18px 35px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: 35px auto;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .title h2 {
-            color: #1a7a86;
-            margin-bottom: 8px;
-        }
-
-        .title p {
-            color: #64748b;
-        }
-
-        .section-title {
-            color: #1a7a86;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 8px;
-            margin-top: 25px;
-            margin-bottom: 20px;
-        }
-
-        .form-grid {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            grid-template-columns: 0.85fr 1.15fr;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
+        a { text-decoration: none; }
+
+        .side-panel {
+            position: relative;
+            background: url('{{ asset("images/bassin/carte-bassin.png") }}') center/cover no-repeat, url('{{ asset("images/bassin/barrage-2.jpeg") }}') center/cover no-repeat;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 46px; color: white; overflow: hidden;
+        }
+        .side-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(13,110,110,0.8) 100%);
+        }
+        .side-panel > * { position: relative; z-index: 1; }
+
+        .side-brand { display: flex; align-items: center; gap: 12px; }
+        .side-brand .logo-badge {
+            width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 21px;
+        }
+        .side-brand div div:first-child { font-weight: 700; font-size: 17px; }
+        .side-brand div div:last-child { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+
+        .side-message h2 { font-size: 26px; line-height: 1.3; margin-bottom: 14px; }
+        .side-message p { font-size: 13.5px; opacity: 0.9; max-width: 340px; line-height: 1.65; margin-bottom: 20px; }
+
+        .side-perks { display: flex; flex-direction: column; gap: 12px; }
+        .side-perk { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .side-perk .ico {
+            width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
 
-        .form-group.full {
-            grid-column: 1 / 3;
-        }
+        .form-panel { display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: #fbfdfd; }
+        .form-box { width: 100%; max-width: 560px; }
 
-        label {
-            font-weight: bold;
-            margin-bottom: 7px;
+        .form-box h1 { font-size: 24px; color: var(--c-navy); margin-bottom: 6px; }
+        .form-box p.subtitle { font-size: 13.5px; color: #64748b; margin-bottom: 26px; }
+
+        .form-section-title {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--c-teal-dark);
+            font-weight: 700; margin: 22px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;
         }
+        .form-section-title:first-of-type { margin-top: 0; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: #334155; }
 
         input {
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 15px;
+            width: 100%; padding: 11px 13px; border: 1px solid #e2e8f0; border-radius: 9px;
+            font-size: 13.5px; background: white;
         }
+        input:focus { outline: none; border-color: var(--c-teal); box-shadow: 0 0 0 3px rgba(37,166,166,0.12); }
 
-        input:focus {
-            outline: none;
-            border-color: #1a7a86;
+        .error-text { color: #ef4444; font-size: 11.5px; margin-top: 4px; }
+
+        .error-box {
+            background: #fef2f2; color: #991b1b; padding: 11px 14px; border-radius: 10px;
+            margin-bottom: 20px; font-size: 13px; border-left: 3px solid #ef4444;
         }
+        .error-box ul { margin-left: 18px; margin-top: 4px; }
 
-        .button-container {
-            margin-top: 30px;
-            text-align: center;
+        button[type="submit"] {
+            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark)); color: white;
+            font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px;
+            box-shadow: 0 10px 22px rgba(13,110,110,0.25); transition: transform 0.15s;
         }
+        button[type="submit"]:hover { transform: translateY(-2px); }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            background: #1a7a86;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+        .form-footer { text-align: center; margin-top: 20px; font-size: 13px; color: #64748b; }
+        .form-footer a { color: var(--c-teal-dark); font-weight: 700; }
+
+        @media (max-width: 900px) {
+            body { grid-template-columns: 1fr; }
+            .side-panel { min-height: 200px; padding: 28px; }
+            .form-row { grid-template-columns: 1fr; }
         }
-
-        button:hover {
-            background: #064d72;
+    
+        .side-brand .logo-badge-img {
+            width: 46px; height: 46px; object-fit: contain; border-radius: 12px; background: rgba(255,255,255,0.9); padding: 4px;
         }
-
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .login-link a {
-            color: #1a7a86;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .errors {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-group.full {
-                grid-column: 1;
-            }
-        }
-    </style>
+</style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h1>ABHOER - Gestion des stages</h1>
+    <div class="side-panel">
+        <div class="side-brand">
+            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="logo-badge-img">
+            <div>
+                <div>ABHOER</div>
+                <div>Bassin Hydraulique de l'Oum Er-Rbia</div>
+            </div>
+        </div>
+
+        <div class="side-message">
+            <h2>Rejoignez-nous</h2>
+            <p>Créez votre compte étudiant pour déposer votre demande de stage et suivre son traitement en temps réel.</p>
+
+            <div class="side-perks">
+                <div class="side-perk"><div class="ico"><i class="bi bi-file-earmark-plus-fill"></i></div> Dépôt de demande 100% en ligne</div>
+                <div class="side-perk"><div class="ico"><i class="bi bi-bell-fill"></i></div> Suivi en temps réel du statut</div>
+                <div class="side-perk"><div class="ico"><i class="bi bi-award-fill"></i></div> Attestation dématérialisée</div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-
-        <div class="card">
-
-            <div class="title">
-                <h2>Créer un compte étudiant</h2>
-                <p>Inscription à la plateforme de gestion des demandes de stage</p>
-            </div>
+    <div class="form-panel">
+        <div class="form-box">
+            <h1>Créer votre compte</h1>
+            <p class="subtitle">Renseignez vos informations pour accéder à l'espace étudiant.</p>
 
             @if ($errors->any())
-                <div class="errors">
-                    <strong>Veuillez corriger les erreurs suivantes :</strong>
-
+                <div class="error-box">
+                    Merci de corriger les champs suivants :
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -178,183 +151,83 @@
             <form method="POST" action="{{ route('inscription.register') }}">
                 @csrf
 
-                <h3 class="section-title">Informations personnelles</h3>
+                <p class="form-section-title">Informations personnelles</p>
 
-                <div class="form-grid">
-
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="nom">Nom *</label>
-
-                        <input
-                            type="text"
-                            id="nom"
-                            name="nom"
-                            value="{{ old('nom') }}"
-                            placeholder="Votre nom"
-                            required
-                        >
+                        <label>Nom *</label>
+                        <input type="text" name="nom" value="{{ old('nom') }}" required>
+                        @error('nom')<div class="error-text">{{ $message }}</div>@enderror
                     </div>
-
                     <div class="form-group">
-                        <label for="prenom">Prénom *</label>
-
-                        <input
-                            type="text"
-                            id="prenom"
-                            name="prenom"
-                            value="{{ old('prenom') }}"
-                            placeholder="Votre prénom"
-                            required
-                        >
+                        <label>Prénom *</label>
+                        <input type="text" name="prenom" value="{{ old('prenom') }}" required>
+                        @error('prenom')<div class="error-text">{{ $message }}</div>@enderror
                     </div>
-
-                    <div class="form-group">
-                        <label for="cin">CIN *</label>
-
-                        <input
-                            type="text"
-                            id="cin"
-                            name="cin"
-                            value="{{ old('cin') }}"
-                            placeholder="Ex : AB123456"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="telephone">Téléphone</label>
-
-                        <input
-                            type="text"
-                            id="telephone"
-                            name="telephone"
-                            value="{{ old('telephone') }}"
-                            placeholder="06XXXXXXXX"
-                        >
-                    </div>
-
-                    <div class="form-group full">
-                        <label for="email">Email *</label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            placeholder="exemple@email.com"
-                            required
-                        >
-                    </div>
-
                 </div>
 
-
-                <h3 class="section-title">Informations académiques</h3>
-
-                <div class="form-grid">
-
-                    <div class="form-group full">
-                        <label for="etablissement">Établissement</label>
-
-                        <input
-                            type="text"
-                            id="etablissement"
-                            name="etablissement"
-                            value="{{ old('etablissement') }}"
-                            placeholder="Nom de votre établissement"
-                        >
-                    </div>
-
+                <div class="form-row">
                     <div class="form-group">
-                        <label for="formation">Formation</label>
-
-                        <input
-                            type="text"
-                            id="formation"
-                            name="formation"
-                            value="{{ old('formation') }}"
-                            placeholder="Ex : MIACSD"
-                        >
+                        <label>CIN *</label>
+                        <input type="text" name="cin" value="{{ old('cin') }}" required>
+                        @error('cin')<div class="error-text">{{ $message }}</div>@enderror
                     </div>
-
                     <div class="form-group">
-                        <label for="niveauEtude">Niveau d'étude</label>
-
-                        <input
-                            type="text"
-                            id="niveauEtude"
-                            name="niveauEtude"
-                            value="{{ old('niveauEtude') }}"
-                            placeholder="Ex : Licence / Bac+3"
-                        >
+                        <label>Téléphone</label>
+                        <input type="text" name="telephone" value="{{ old('telephone') }}">
+                        @error('telephone')<div class="error-text">{{ $message }}</div>@enderror
                     </div>
-
                 </div>
 
-
-                <h3 class="section-title">Informations de connexion</h3>
-
-                <div class="form-grid">
-
-                    <div class="form-group full">
-                        <label for="login">Login *</label>
-
-                        <input
-                            type="text"
-                            id="login"
-                            name="login"
-                            value="{{ old('login') }}"
-                            placeholder="Choisissez votre login"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="motDePasse">Mot de passe *</label>
-
-                        <input
-                            type="password"
-                            id="motDePasse"
-                            name="motDePasse"
-                            placeholder="Votre mot de passe"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="motDePasse_confirmation">
-                            Confirmer le mot de passe *
-                        </label>
-
-                        <input
-                            type="password"
-                            id="motDePasse_confirmation"
-                            name="motDePasse_confirmation"
-                            placeholder="Confirmez votre mot de passe"
-                            required
-                        >
-                    </div>
-
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" name="email" value="{{ old('email') }}" required>
+                    @error('email')<div class="error-text">{{ $message }}</div>@enderror
                 </div>
 
+                <p class="form-section-title">Parcours académique</p>
 
-                <div class="button-container">
-                    <button type="submit">
-                        Créer mon compte
-                    </button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Établissement</label>
+                        <input type="text" name="etablissement" value="{{ old('etablissement') }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Formation</label>
+                        <input type="text" name="formation" value="{{ old('formation') }}">
+                    </div>
                 </div>
 
+                <div class="form-group">
+                    <label>Niveau d'étude</label>
+                    <input type="text" name="niveauEtude" value="{{ old('niveauEtude') }}">
+                </div>
+
+                <p class="form-section-title">Identifiants de connexion</p>
+
+                <div class="form-group">
+                    <label>Login *</label>
+                    <input type="text" name="login" value="{{ old('login') }}" required>
+                    @error('login')<div class="error-text">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mot de passe *</label>
+                        <input type="password" name="motDePasse" required>
+                        @error('motDePasse')<div class="error-text">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmer le mot de passe *</label>
+                        <input type="password" name="motDePasse_confirmation" required>
+                    </div>
+                </div>
+
+                <button type="submit"><i class="bi bi-person-plus-fill"></i> Créer mon compte</button>
             </form>
 
-            <div class="login-link">
-                Déjà inscrit ?
-                <a href="{{ route('login') }}">
-                    Se connecter
-                </a>
-            </div>
-
+            <p class="form-footer">Déjà un compte ? <a href="{{ route('login') }}">Se connecter</a></p>
         </div>
-
     </div>
 
 </body>

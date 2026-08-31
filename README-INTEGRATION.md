@@ -1,67 +1,45 @@
-# Intégration — Fusion complète (Étudiant + Responsable + Accueil)
+# Intégration — Bootstrap Icons + nouvelles photos
 
-## ⚠️ Important avant de commencer
+## Pourquoi ce changement
+Les icônes Tabler ne s'affichaient pas (le CDN ne se chargeait pas correctement chez toi).
+On passe sur **Bootstrap Icons** (CDN jsDelivr, plus fiable), comme tu l'as demandé.
 
-Ce zip contient l'**état complet et déjà fusionné** de :
-- Ta partie (Responsable + Agent + Attestations)
-- La partie de ta binôme (Espace Étudiant + Inscription), récupérée depuis la branche `etudiant` sur GitHub
-- La nouvelle page d'accueil publique
+## 1. Fichiers à remplacer entièrement (16 vues + 1 contrôleur)
+Toutes les vues qui contenaient des icônes ont été mises à jour — remplace-les avec celles du zip :
+- `resources/views/accueil/services.blade.php`
+- `resources/views/accueil/localisation.blade.php`
+- `resources/views/accueil/index.blade.php`
+- `resources/views/layouts/responsable.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/layouts/etudiant.blade.php`
+- `resources/views/auth/inscription.blade.php`
+- `resources/views/auth/login.blade.php`
+- `resources/views/etudiant/dashboard.blade.php`
+- `resources/views/responsable/dashboard.blade.php`
+- `resources/views/responsable/demandes/create.blade.php`
+- `resources/views/responsable/demandes/index.blade.php`
+- `resources/views/responsable/demandes/show.blade.php`
+- `resources/views/responsable/attestations/index.blade.php`
+- `resources/views/responsable/stages/index.blade.php`
+- `resources/views/responsable/historique/index.blade.php`
+- `app/Http/Controllers/AccueilController.php`
 
-**Sauvegarde ton projet actuel avant de commencer** (copie le dossier entier ailleurs, ou fais un commit Git local de ce que tu as déjà), au cas où.
+## 2. Photos à remplacer/ajouter dans `public/images/`
+- `logo-abhoer.png` → nouveau logo officiel (remplace l'existant)
+- `bassin/siege-abhoer.jpeg` → nouvelle photo (siège de l'agence)
+- `bassin/barrage-al-massira.jpeg` → nouvelle photo (barrage Al Massira)
+- `bassin/barrage-1.jpeg` et `bassin/barrage-2.jpeg` → remplacées par des versions plus propres (sans la barre de statut du téléphone visible avant)
 
-## 1. Ce qu'il faut remplacer ENTIÈREMENT dans ton projet
+Copie tout le contenu de `public/images/` du zip par-dessus ton dossier `public/images/` existant (remplace les fichiers de même nom, ajoute les nouveaux).
 
-Dézippe `abhoer-complet.zip`, puis remplace ces dossiers en entier dans `C:\laragon\www\abhoer-gestion-stages\` par ceux du zip :
-
-- `app\` (contrôleurs, modèles, middleware)
-- `resources\` (toutes les vues)
-- `routes\`
-- `database\` (migrations + seeders)
-- `bootstrap\`
-- `public\images\` (juste ce sous-dossier, pas tout `public\`)
-
-C'est plus sûr de tout remplacer d'un coup plutôt que fichier par fichier, vu le volume.
-
-## 2. Commandes à lancer, dans l'ordre
-
+## 3. Après copie
 ```bash
-php artisan migrate
-php artisan db:seed --class=DepartementServiceSeeder
-composer dump-autoload
 php artisan view:clear
-php artisan route:clear
 php artisan config:clear
 ```
+Pas de `composer dump-autoload` nécessaire cette fois (juste des vues + 1 contrôleur, pas de nouvelle classe).
 
-## 3. Comptes de test à créer (si pas déjà fait)
-
-```bash
-php artisan tinker --execute="\App\Models\Utilisateur::firstOrCreate(['login' => 'responsable'], ['nom' => 'Test', 'prenom' => 'Responsable', 'motDePasse' => bcrypt('password123'), 'role' => 'RESPONSABLE', 'actif' => 1]);"
-```
-
-Pour un compte étudiant, utilise directement le formulaire `/inscription` dans le navigateur (plus simple que Tinker).
-
-## 4. Ce que tu dois tester
-
-1. **Page d'accueil** : va sur `/` — tu dois voir le hero animé avec vagues, la section À propos, les 6 services, la carte de localisation, la galerie photo.
-2. **Inscription** : clique sur "S'inscrire", crée un compte étudiant test.
-3. **Connexion étudiant** : connecte-toi avec ce compte → tu dois arriver sur `/etudiant/dashboard`.
-4. **Connexion responsable** : connecte-toi avec le compte `responsable` → tu dois arriver sur `/responsable/dashboard`, avec tout ce qu'on a construit (demandes, stages, historique, attestations).
-5. **Vérifie qu'un étudiant ne peut PAS accéder à `/responsable/dashboard`** (doit afficher une erreur 403 "Vous n'avez pas accès à cette section").
-
-## 5. Ce qui a été résolu pendant la fusion
-
-- **Conflit de route et de contrôleur de connexion** (`LoginController.php`, `routes/web.php`) : fusionnés pour gérer les 3 rôles (`ADMINISTRATEUR`, `RESPONSABLE`/`AGENT`, `ETUDIANT`).
-- **Conflit de colonne base de données** : toi et ta binôme aviez chacune ajouté une colonne `theme` à `demande_stage` dans deux migrations séparées. La tienne a été corrigée pour ne garder que `typeStage` (la colonne `theme` vient maintenant uniquement de sa migration à elle).
-- **Design unifié** : la couleur bleue qu'elle utilisait (`#08608c`) a été remplacée par ta palette turquoise (`#1a7a86`) sur toutes les pages étudiant, pour que l'application ait un seul style cohérent de bout en bout.
-- **Logo et lien d'inscription** ajoutés sur la page de connexion et le dashboard étudiant.
-
-## 6. Une fois que tout fonctionne
-
-```bash
-git add -A
-git commit -m "Fusion espace Étudiant + Responsable + Attestations + page d'accueil"
-git push
-```
-
-Ça enregistre la fusion dans ton historique Git local et la publie sur GitHub.
+## 4. Test
+1. Recharge `/` en forçant le cache (Ctrl+Shift+R) — les icônes doivent maintenant s'afficher partout (navbar, cartes, boutons)
+2. Vérifie la page `/localisation` — la photo du siège doit apparaître au-dessus des infos d'adresse
+3. Vérifie la section "À propos" de l'accueil — la photo doit être celle du barrage Al Massira (avec les 2 jets d'eau)
