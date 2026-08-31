@@ -110,4 +110,16 @@ class DemandeStage extends Model
             'idDemande'
         );
     }
+
+    /**
+     * Une demande peut avoir une attestation de stage associée.
+     */
+    public function attestation(): HasOne
+    {
+        return $this->hasOne(
+            Attestation::class,
+            'idDemande',
+            'idDemande'
+        );
+    }
 }

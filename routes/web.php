@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\InscriptionController;
+use App\Http\Controllers\AccueilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ use App\Http\Controllers\Responsable\ResponsableDashboardController;
 use App\Http\Controllers\Responsable\ResponsableDemandeController;
 use App\Http\Controllers\Responsable\ResponsableHistoriqueController;
 use App\Http\Controllers\Responsable\ResponsableStageController;
+use App\Http\Controllers\Responsable\ResponsableAttestationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,9 +51,14 @@ use App\Http\Controllers\EtudiantNotificationController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [AccueilController::class, 'index'])
+    ->name('accueil');
+
+Route::get('/services', [AccueilController::class, 'services'])
+    ->name('accueil.services');
+
+Route::get('/localisation', [AccueilController::class, 'localisation'])
+    ->name('accueil.localisation');
 
 
 /*
@@ -704,5 +711,32 @@ Route::prefix('responsable')
             ResponsableHistoriqueController::class,
             'index'
         ])->name('historique.index');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ATTESTATIONS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/attestations', [
+            ResponsableAttestationController::class,
+            'index'
+        ])->name('attestations.index');
+
+        Route::post('/attestations/demarrer/{idDemande}', [
+            ResponsableAttestationController::class,
+            'demarrer'
+        ])->name('attestations.demarrer');
+
+        Route::post('/attestations/{id}/prete', [
+            ResponsableAttestationController::class,
+            'marquerPrete'
+        ])->name('attestations.prete');
+
+        Route::post('/attestations/{id}/remise', [
+            ResponsableAttestationController::class,
+            'marquerRemise'
+        ])->name('attestations.remise');
 
     });
