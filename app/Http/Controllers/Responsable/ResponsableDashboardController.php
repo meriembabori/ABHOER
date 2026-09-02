@@ -4,89 +4,59 @@ namespace App\Http\Controllers\Responsable;
 
 use App\Http\Controllers\Controller;
 use App\Models\Affectation;
+use App\Models\Attestation;
 use App\Models\DemandeStage;
+use App\Models\Service;
+use Illuminate\Support\Facades\Auth;
 
 class ResponsableDashboardController extends Controller
 {
     public function index()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Statistiques des demandes
-        |--------------------------------------------------------------------------
-        */
-
         $totalDemandes = DemandeStage::count();
 
-        $demandesEnAttente = DemandeStage::where(
-            'statut',
-            'EN_ATTENTE'
-        )->count();
+        $demandesEnAttente = DemandeStage::where('statut', 'EN_ATTENTE')->count();
 
-        $demandesInfosDemandees = DemandeStage::where(
-            'statut',
-            'INFOS_DEMANDEES'
-        )->count();
+        $demandesInfosDemandees = DemandeStage::where('statut', 'INFOS_DEMANDEES')->count();
 
-        $demandesAcceptees = DemandeStage::where(
-            'statut',
-            'ACCEPTEE'
-        )->count();
+        $demandesAcceptees = DemandeStage::where('statut', 'ACCEPTEE')->count();
 
-        $demandesRefusees = DemandeStage::where(
-            'statut',
-            'REFUSEE'
-        )->count();
+        $demandesRefusees = DemandeStage::where('statut', 'REFUSEE')->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Stages actuellement en cours
-        |--------------------------------------------------------------------------
-        */
-
-        $stagesEnCours = Affectation::whereDate(
-            'dateDebut',
-            '<=',
-            now()
-        )
-            ->whereDate(
-                'dateFin',
-                '>=',
-                now()
-            )
+        $stagesEnCours = Affectation::whereDate('dateDebut', '<=', now())
+            ->whereDate('dateFin', '>=', now())
             ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Dernières demandes
-        |--------------------------------------------------------------------------
-        */
+        $attestationsEnPreparation = Attestation::where('statut', 'EN_PREPARATION')->count();
+        $attestationsPretes = Attestation::where('statut', 'PRETE')->count();
+        $attestationsRemises = Attestation::where('statut', 'REMISE')->count();
 
-        $dernieresDemandes = DemandeStage::with([
-            'candidat',
-            'service',
-        ])
+        $demandesParService = Service::withCount('demandes')
+            ->orderByDesc('demandes_count')
+            ->limit(6)
+            ->get()
+            ->filter(fn ($service) => $service->demandes_count > 0);
+
+        $maxParService = $demandesParService->max('demandes_count') ?: 1;
+
+        $dernieresDemandes = DemandeStage::with(['candidat', 'service'])
             ->orderBy('dateDepot', 'desc')
             ->limit(6)
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Vue
-        |--------------------------------------------------------------------------
-        */
-
-        return view(
-            'responsable.dashboard',
-            compact(
-                'totalDemandes',
-                'demandesEnAttente',
-                'demandesInfosDemandees',
-                'demandesAcceptees',
-                'demandesRefusees',
-                'stagesEnCours',
-                'dernieresDemandes'
-            )
-        );
+        return view('responsable.dashboard', compact(
+            'totalDemandes',
+            'demandesEnAttente',
+            'demandesInfosDemandees',
+            'demandesAcceptees',
+            'demandesRefusees',
+            'stagesEnCours',
+            'attestationsEnPreparation',
+            'attestationsPretes',
+            'attestationsRemises',
+            'demandesParService',
+            'maxParService',
+            'dernieresDemandes'
+        ));
     }
 }

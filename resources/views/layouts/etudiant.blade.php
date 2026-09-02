@@ -1,215 +1,312 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Espace Étudiant') - ABHOER</title>
+    <title>@yield('title', 'Espace Étudiant - ABHOER')</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --c-teal-dark: #0d6e6e;
-            --c-teal: #25a6a6;
-            --c-teal-pale: #e6f4f4;
-            --c-bg: #f6f9fb;
-            --c-navy: #0f172a;
-            --radius: 14px;
-            --shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+            --etud-primary: #14213d;
+            --etud-blue: #2563eb;
+            --etud-blue-dark: #1d4ed8;
+            --etud-blue-light: #eff6ff;
+            --etud-bg: #f5f7fb;
+            --etud-white: #ffffff;
+            --etud-text: #172033;
+            --etud-muted: #7b8496;
+            --etud-border: #e5e9f0;
+            --etud-success: #16a34a;
+            --etud-warning: #d97706;
+            --etud-danger: #dc2626;
+            --sidebar-width: 260px;
         }
 
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; min-height: 100%; }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--c-bg);
-            color: #1e293b;
-            display: flex;
-            min-height: 100vh;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--etud-bg);
+            color: var(--etud-text);
+            -webkit-font-smoothing: antialiased;
         }
+        a { text-decoration: none; }
 
-        a { text-decoration: none; color: inherit; }
+        .etud-layout { min-height: 100vh; display: flex; }
 
-        /* ============ SIDEBAR (claire) ============ */
-        .sidebar {
-            width: 250px;
-            flex-shrink: 0;
-            background: white;
-            border-right: 1px solid #eef2f6;
+        .etud-sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            background: linear-gradient(180deg, #14213d 0%, #101a30 100%);
+            color: #fff;
             display: flex;
             flex-direction: column;
-            position: sticky;
-            top: 0;
-            height: 100vh;
+            z-index: 1000;
+            box-shadow: 8px 0 30px rgba(15,23,42,.10);
+            overflow-y: auto;
         }
 
-        .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 22px; }
-        .sidebar-brand .logo-badge {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark));
-            display: flex; align-items: center; justify-content: center; font-size: 19px; color: white; flex-shrink: 0;
+        .etud-sidebar-brand {
+            height: 90px; display: flex; align-items: center; padding: 18px 21px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
         }
-        .sidebar-brand h1 { font-size: 15px; color: var(--c-navy); }
-        .sidebar-brand span { font-size: 10.5px; color: #94a3b8; display: block; margin-top: 2px; }
+        .etud-sidebar-logo { width: 48px; height: 48px; object-fit: contain; background: #fff; border-radius: 12px; padding: 4px; margin-right: 12px; box-shadow: 0 5px 15px rgba(0,0,0,.12); }
+        .etud-sidebar-brand-title { margin: 0; font-size: 19px; font-weight: 800; color: #fff; letter-spacing: .4px; line-height: 1.2; }
+        .etud-sidebar-brand-subtitle { display: block; margin-top: 4px; font-size: 10px; color: rgba(255,255,255,.55); font-weight: 500; }
 
-        .sidebar-nav { flex: 1; padding: 10px 12px; }
-        .sidebar-nav a {
-            display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px;
-            font-size: 13.5px; color: #475569; margin-bottom: 3px; transition: background 0.15s, color 0.15s;
+        .etud-sidebar-profile {
+            margin: 18px 15px 14px; padding: 13px; background: rgba(255,255,255,.055);
+            border: 1px solid rgba(255,255,255,.08); border-radius: 13px; display: flex; align-items: center; gap: 11px;
         }
-        .sidebar-nav a i { font-size: 17px; width: 18px; text-align: center; }
-        .sidebar-nav a:hover { background: var(--c-teal-pale); color: var(--c-teal-dark); }
-        .sidebar-nav a.active {
-            background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark)); color: white;
-            box-shadow: 0 4px 14px rgba(37, 166, 166, 0.3);
+        .etud-profile-icon {
+            width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; background: rgba(37,99,235,.20);
+            color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .etud-profile-name { display: block; font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .etud-profile-role { display: block; margin-top: 3px; font-size: 10px; color: rgba(255,255,255,.50); }
+
+        .etud-sidebar-menu { flex: 1; padding: 9px 12px; overflow-y: auto; }
+        .etud-menu-title { padding: 10px 11px; margin-bottom: 6px; font-size: 10px; font-weight: 800; color: rgba(255,255,255,.38); text-transform: uppercase; letter-spacing: 1px; }
+        .etud-menu-item { margin-bottom: 4px; }
+        .etud-menu-link {
+            position: relative; display: flex; align-items: center; width: 100%; min-height: 45px; padding: 10px 13px;
+            border-radius: 10px; color: rgba(255,255,255,.67); font-size: 13px; font-weight: 500;
+            transition: background .2s ease, color .2s ease, transform .2s ease;
+        }
+        .etud-menu-link i { width: 23px; margin-right: 11px; font-size: 16px; text-align: center; flex-shrink: 0; }
+        .etud-menu-link:hover { color: #fff; background: rgba(255,255,255,.075); transform: translateX(2px); }
+        .etud-menu-link.active {
+            color: #fff; background: linear-gradient(90deg, #2563eb, #1d4ed8); font-weight: 700;
+            box-shadow: 0 7px 18px rgba(37,99,235,.25);
+        }
+        .etud-menu-link.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 5px 5px 0; background: #fff; }
+        .etud-menu-link.active i { color: #fff; }
+        .etud-menu-badge { margin-left: auto; background: #dc2626; color: #fff; font-size: 10px; font-weight: 700; border-radius: 20px; padding: 1px 7px; }
+
+        .etud-sidebar-footer { padding: 13px; border-top: 1px solid rgba(255,255,255,.08); }
+        .etud-logout-link {
+            width: 100%; border: none; background: transparent; display: flex; align-items: center;
+            padding: 11px 13px; border-radius: 10px; color: #fda4af; font-size: 13px; font-weight: 600; transition: .2s ease;
+        }
+        .etud-logout-link:hover { background: rgba(220,38,38,.12); color: #fecdd3; }
+        .etud-logout-link i { width: 23px; margin-right: 10px; font-size: 16px; }
+
+        .etud-main { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); min-height: 100vh; display: flex; flex-direction: column; }
+
+        .etud-topbar {
+            min-height: 76px; background: rgba(255,255,255,.97); border-bottom: 1px solid var(--etud-border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+            position: sticky; top: 0; z-index: 900; box-shadow: 0 3px 15px rgba(20,33,61,.035);
+        }
+        .etud-topbar-left { display: flex; align-items: center; gap: 12px; }
+        .etud-topbar-icon { width: 41px; height: 41px; border-radius: 11px; background: var(--etud-blue-light); color: var(--etud-blue); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .etud-topbar-title { margin: 0; font-size: 16px; font-weight: 750; color: var(--etud-text); }
+        .etud-topbar-subtitle { display: block; margin-top: 3px; font-size: 11px; color: var(--etud-muted); }
+        .etud-mobile-button { display: none; border: none; background: transparent; color: var(--etud-primary); font-size: 22px; }
+
+        .etud-page { width: 100%; max-width: 1500px; margin: 0 auto; padding: 31px; }
+        .etud-page-header { margin-bottom: 27px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; }
+        .etud-page-title { margin: 0 0 6px; font-size: 27px; font-weight: 800; color: var(--etud-text); letter-spacing: -.3px; }
+        .etud-page-description { margin: 0; font-size: 13px; color: var(--etud-muted); }
+
+        .card { background: #fff; border: 1px solid var(--etud-border); border-radius: 15px; box-shadow: 0 5px 20px rgba(20,33,61,.045); }
+        .btn { border-radius: 9px; font-weight: 600; transition: all .2s ease; }
+        .btn-primary { background: var(--etud-blue); border-color: var(--etud-blue); box-shadow: 0 5px 12px rgba(37,99,235,.15); }
+        .btn-primary:hover { background: var(--etud-blue-dark); border-color: var(--etud-blue-dark); transform: translateY(-1px); }
+        .btn-outline-primary { color: var(--etud-blue); border-color: #bfdbfe; }
+        .btn-outline-primary:hover { background: var(--etud-blue); border-color: var(--etud-blue); color: #fff; }
+
+        .table { color: var(--etud-text); margin-bottom: 0; }
+        .table thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .55px; color: var(--etud-muted); font-weight: 750; padding: 15px 16px; background: #f8fafc; border-bottom: 1px solid var(--etud-border); }
+        .table tbody td { padding: 15px 16px; border-color: var(--etud-border); font-size: 13px; vertical-align: middle; }
+        .table-hover tbody tr:hover { background: #f8faff; }
+
+        .badge { border-radius: 7px; padding: 6px 9px; font-size: 10px; font-weight: 700; letter-spacing: .2px; }
+        .etud-alert { border: none; border-radius: 11px; padding: 13px 16px; font-size: 13px; box-shadow: 0 3px 12px rgba(23,32,51,.04); }
+
+        .form-control, .form-select { border-radius: 9px; border-color: #dfe4ec; padding: 10px 13px; font-size: 13px; box-shadow: none !important; }
+        .form-control:focus, .form-select:focus { border-color: var(--etud-blue); box-shadow: 0 0 0 3px rgba(37,99,235,.09) !important; }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--etud-text); }
+
+        .etud-footer { margin-top: auto; text-align: center; color: #98a1b2; font-size: 11px; padding: 20px 15px 25px; }
+
+        .etud-stat-card { background: #fff; border: 1px solid var(--etud-border); border-radius: 16px; min-height: 150px; padding: 24px; box-shadow: 0 5px 20px rgba(23,32,51,.045); transition: transform .2s ease, box-shadow .2s ease; }
+        .etud-stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(23,32,51,.08); }
+        .etud-stat-content { display: flex; justify-content: space-between; align-items: flex-start; }
+        .etud-stat-label { font-size: 12.5px; color: var(--etud-muted); margin-bottom: 8px; }
+        .etud-stat-number { font-size: 27px; font-weight: 800; color: var(--etud-text); }
+        .etud-stat-description { font-size: 11px; color: var(--etud-muted); margin-top: 6px; }
+        .etud-stat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+        .icon-primary { background: var(--etud-blue-light); color: var(--etud-blue); }
+        .icon-warning { background: #fff7ed; color: var(--etud-warning); }
+        .icon-success { background: #ecfdf3; color: var(--etud-success); }
+        .icon-danger { background: #fff1f2; color: var(--etud-danger); }
+
+        @media (max-width: 992px) {
+            :root { --sidebar-width: 230px; }
+            .etud-page { padding: 25px 22px; }
+            .etud-topbar { padding: 0 22px; }
+        }
+        @media (max-width: 768px) {
+            .etud-sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+            .etud-sidebar.show { transform: translateX(0); }
+            .etud-main { margin-left: 0; width: 100%; }
+            .etud-mobile-button { display: block; }
+            .etud-topbar { padding: 0 15px; }
+            .etud-page { padding: 21px 15px; }
+            .etud-page-title { font-size: 23px; }
         }
 
-        .sidebar-user { padding: 16px; margin: 10px 12px 16px; background: var(--c-teal-pale); border-radius: 12px; }
-        .sidebar-user-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .sidebar-user-avatar {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark));
-            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: white; flex-shrink: 0;
-        }
-        .sidebar-user-name { font-size: 13px; color: var(--c-navy); font-weight: 600; }
-        .sidebar-user-role { font-size: 11px; color: #64748b; }
-        .sidebar-user button {
-            width: 100%; padding: 8px; border-radius: 8px; border: 1px solid rgba(13,110,110,0.2);
-            background: white; color: var(--c-teal-dark); font-size: 12px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-        .sidebar-user button:hover { background: var(--c-teal-pale); }
-
-        /* ============ MAIN ============ */
-        .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-
-        .topbar {
-            background: white; border-bottom: 1px solid #eef2f6; padding: 16px 30px;
-            display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10;
-        }
-        .topbar-title { font-size: 20px; font-weight: 600; color: var(--c-navy); }
-        .topbar-subtitle { font-size: 12.5px; color: #64748b; margin-top: 2px; }
-
-        .content { padding: 28px 30px; flex: 1; }
-
-        .fade-in { animation: fadeIn 0.5s ease both; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn {
-            display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 10px;
-            border: none; font-weight: 600; font-size: 13.5px; cursor: pointer; transition: transform 0.15s;
-        }
-        .btn:hover { transform: translateY(-1px); }
-        .btn-primary { background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark)); color: white; box-shadow: 0 6px 16px rgba(37,166,166,0.3); }
-        .btn-secondary { background: var(--c-teal-pale); color: var(--c-teal-dark); }
-        .btn-outline { background: white; color: var(--c-navy); border: 1px solid #e2e8f0; }
-
-        .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
-
-        .alert-success { background: #ecfdf5; color: #065f46; padding: 13px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13.5px; border-left: 3px solid #10b981; }
-        .alert-error { background: #fef2f2; color: #991b1b; padding: 13px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13.5px; border-left: 3px solid #ef4444; }
-
-        .badge { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 11.5px; font-weight: 700; }
-        .badge-EN_ATTENTE { background: #fef3c7; color: #92400e; }
-        .badge-INFOS_DEMANDEES { background: #ede9fe; color: #5b21b6; }
-        .badge-ACCEPTEE { background: #d1fae5; color: #065f46; }
-        .badge-REFUSEE { background: #fee2e2; color: #991b1b; }
-
-        table { width: 100%; border-collapse: collapse; }
-        th, td { text-align: left; padding: 13px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
-        th { color: #94a3b8; font-size: 11px; text-transform: uppercase; font-weight: 700; }
-
-        input, select, textarea {
-            width: 100%; padding: 10px 13px; border: 1px solid #e2e8f0; border-radius: 9px; font-size: 13.5px; font-family: inherit; background: white;
-        }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c-teal); box-shadow: 0 0 0 3px rgba(37,166,166,0.12); }
-        label { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: #334155; }
-
-        @media (max-width: 960px) {
-            .sidebar { display: none; }
-            .content { padding: 20px 16px; }
-            .topbar { padding: 14px 18px; }
-        }
-    
-        .sidebar-brand .logo-badge-img {
-            width: 38px; height: 38px; object-fit: contain; border-radius: 10px; background: white; padding: 3px; flex-shrink: 0;
-        }
-</style>
-
-    @stack('styles')
+        @stack('styles')
+    </style>
 </head>
 
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-brand">
-            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="logo-badge-img">
+<div class="etud-layout">
+
+    <aside class="etud-sidebar" id="etudSidebar">
+
+        <div class="etud-sidebar-brand">
+            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="etud-sidebar-logo">
             <div>
-                <h1>ABHOER</h1>
-                <span>Espace Étudiant</span>
+                <h1 class="etud-sidebar-brand-title">ABHOER</h1>
+                <span class="etud-sidebar-brand-subtitle">Espace Étudiant</span>
             </div>
         </div>
 
-        <nav class="sidebar-nav">
-            <a href="{{ route('etudiant.dashboard') }}" class="{{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2-fill"></i> Tableau de bord
-            </a>
-            <a href="{{ route('etudiant.demandes.index') }}" class="{{ request()->routeIs('etudiant.demandes.index') ? 'active' : '' }}">
-                <i class="bi bi-file-earmark-text-fill"></i> Mes demandes
-            </a>
-            <a href="{{ route('etudiant.demandes.create') }}" class="{{ request()->routeIs('etudiant.demandes.create') ? 'active' : '' }}">
-                <i class="bi bi-file-earmark-plus-fill"></i> Nouvelle demande
-            </a>
-            <a href="{{ route('etudiant.profil') }}" class="{{ request()->routeIs('etudiant.profil*') ? 'active' : '' }}">
-                <i class="bi bi-person-fill"></i> Mon profil
-            </a>
+        <div class="etud-sidebar-profile">
+            <div class="etud-profile-icon"><i class="bi bi-person-fill"></i></div>
+            <div>
+                <span class="etud-profile-name">{{ auth()->user()->prenom ?? auth()->user()->nom ?? 'Étudiant' }}</span>
+                <span class="etud-profile-role">Étudiant</span>
+            </div>
+        </div>
+
+        <nav class="etud-sidebar-menu">
+            <div class="etud-menu-title">Menu principal</div>
+
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.dashboard') }}" class="etud-menu-link {{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">
+                    <i class="bi bi-grid-1x2-fill"></i><span>Tableau de bord</span>
+                </a>
+            </div>
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.demandes.index') }}" class="etud-menu-link {{ request()->routeIs('etudiant.demandes.index') || request()->routeIs('etudiant.demandes.show') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text-fill"></i><span>Mes demandes</span>
+                </a>
+            </div>
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.demandes.create') }}" class="etud-menu-link {{ request()->routeIs('etudiant.demandes.create') || request()->routeIs('etudiant.demandes.informations') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-plus-fill"></i><span>Nouvelle demande</span>
+                </a>
+            </div>
+            @if (\Illuminate\Support\Facades\Route::has('etudiant.documents.index'))
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.documents.index') }}" class="etud-menu-link {{ request()->routeIs('etudiant.documents.*') ? 'active' : '' }}">
+                    <i class="bi bi-folder-fill"></i><span>Mes documents</span>
+                </a>
+            </div>
+            @endif
+            @if (\Illuminate\Support\Facades\Route::has('etudiant.notifications'))
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.notifications') }}" class="etud-menu-link {{ request()->routeIs('etudiant.notifications*') ? 'active' : '' }}">
+                    <i class="bi bi-bell-fill"></i><span>Notifications</span>
+                </a>
+            </div>
+            @endif
+
+            <div class="etud-menu-title mt-3">Compte</div>
+            <div class="etud-menu-item">
+                <a href="{{ route('etudiant.profil') }}" class="etud-menu-link {{ request()->routeIs('etudiant.profil*') ? 'active' : '' }}">
+                    <i class="bi bi-person-vcard-fill"></i><span>Mon profil</span>
+                </a>
+            </div>
         </nav>
 
-        <div class="sidebar-user">
-            <div class="sidebar-user-row">
-                <div class="sidebar-user-avatar">{{ strtoupper(substr(auth()->user()->prenom ?? 'U', 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom ?? '', 0, 1)) }}</div>
-                <div>
-                    <div class="sidebar-user-name">{{ auth()->user()->prenom ?? '' }} {{ auth()->user()->nom ?? '' }}</div>
-                    <div class="sidebar-user-role">Étudiant</div>
-                </div>
-            </div>
-            <form method="POST" action="{{ route('logout') }}">
+        <div class="etud-sidebar-footer">
+            <form method="POST" action="{{ route('logout') }}" class="m-0">
                 @csrf
-                <button type="submit"><i class="bi bi-box-arrow-right"></i> Se déconnecter</button>
+                <button type="submit" class="etud-logout-link"><i class="bi bi-box-arrow-right"></i><span>Déconnexion</span></button>
             </form>
         </div>
+
     </aside>
 
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <div class="topbar-title">@yield('page-title', 'Tableau de bord')</div>
-                <div class="topbar-subtitle">@yield('page-subtitle', '')</div>
-            </div>
-            <a href="{{ route('etudiant.demandes.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouvelle demande</a>
-        </div>
+    <div class="etud-main">
 
-        <div class="content fade-in">
+        <header class="etud-topbar">
+            <div class="etud-topbar-left">
+                <button type="button" class="etud-mobile-button" id="etudMobileButton" aria-label="Ouvrir le menu"><i class="bi bi-list"></i></button>
+                <div class="etud-topbar-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                <div>
+                    <h2 class="etud-topbar-title">Espace Étudiant</h2>
+                    <span class="etud-topbar-subtitle">Suivi de vos demandes de stage ABHOER</span>
+                </div>
+            </div>
+
+            <a href="{{ route('etudiant.demandes.create') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Nouvelle demande
+            </a>
+        </header>
+
+        <main class="etud-page">
+
+            @hasSection('page-header')
+                @yield('page-header')
+            @else
+                <div class="etud-page-header">
+                    <div>
+                        <h1 class="etud-page-title">@yield('page-title', 'Tableau de bord')</h1>
+                        <p class="etud-page-description">@yield('page-description', '')</p>
+                    </div>
+                </div>
+            @endif
 
             @if (session('success'))
-                <div class="alert-success"><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</div>
+                <div class="alert alert-success etud-alert mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                </div>
             @endif
 
             @if ($errors->any())
-                <div class="alert-error">
+                <div class="alert alert-danger etud-alert mb-4" role="alert">
                     @foreach ($errors->all() as $error)
                         {{ $error }}<br>
                     @endforeach
                 </div>
             @endif
 
-            @yield('content')
+            <div class="etud-content">
+                @yield('content')
+            </div>
 
-        </div>
+        </main>
+
+        <footer class="etud-footer">ABHOER — Plateforme de gestion des stages</footer>
+
     </div>
 
-    @stack('scripts')
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const button = document.getElementById('etudMobileButton');
+        const sidebar = document.getElementById('etudSidebar');
+        if (button && sidebar) {
+            button.addEventListener('click', function () { sidebar.classList.toggle('show'); });
+        }
+    });
+</script>
+
+@stack('scripts')
 
 </body>
-
 </html>

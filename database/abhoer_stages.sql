@@ -1,4 +1,4 @@
-abhoer_stagesrole_edgesrole_edges-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: abhoer_stages
 -- ------------------------------------------------------
@@ -516,3 +516,6 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-08-16 17:42:58
+DESCRIBE utilisateur;
+
+SHOW CREATE TABLE demande_stage;

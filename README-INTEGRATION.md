@@ -1,38 +1,21 @@
-# Intégration — Départements/Services (organigramme) + Type de stage/Thème
+# Résultat final — Design unifié (Responsable + Étudiant en bleu nuit)
 
-## 1. Fichier nouveau : la migration
-- `database/migrations/2026_08_19_102710_add_type_stage_and_theme_to_demande_stage_table.php`
-  → copie-la dans `database/migrations/`, puis lance :
-```bash
-php artisan migrate
-```
-Ça ajoute 2 colonnes (`typeStage`, `theme`) à la table `demande_stage`, sans toucher aux données existantes.
+## Ce que contient ce zip
+- **`resources/views/layouts/responsable.blade.php`** et **`layouts/etudiant.blade.php`** — nouveaux layouts avec sidebar bleu nuit (`#14213d`/`#2563eb`), identiques dans leur structure à celui de l'Admin
+- **Dashboard Responsable** et **Dashboard Étudiant** — cartes de stats, donut, tableaux, dans ce même style
+- **5 pages Responsable** (Demandes liste/détail/création, Suivi des stages, Historique, Attestations) — toutes reconstruites en Bootstrap 5, cohérentes avec l'Admin
+- Le contrôleur du dashboard Responsable enrichi (stats attestations + répartition par service)
 
-## 2. Fichier nouveau : le seeder
-- `database/seeders/DepartementServiceSeeder.php` → copie-le dans `database/seeders/`
+## Intégration
+1. Copie chaque fichier à son emplacement exact dans ton projet (mêmes chemins)
+2. `composer dump-autoload`
+3. `php artisan view:clear && php artisan config:clear`
 
-Puis lance-le pour peupler la base avec l'organigramme (Secrétariat Général + 4 Divisions + Délégation, et tous leurs services) :
-```bash
-php artisan db:seed --class=DepartementServiceSeeder
-```
-Il utilise `firstOrCreate`, donc tu peux le relancer sans créer de doublons.
+## Résultat
+Les 4 espaces (Accueil public, Admin, Responsable, Étudiant) partagent maintenant exactement la même identité visuelle : sidebar bleu nuit, cartes de statistiques identiques, icônes Bootstrap Icons partout, boutons et badges cohérents.
 
-## 3. Fichiers modifiés (remplace entièrement)
-- `app/Models/DemandeStage.php` → ajout de `typeStage` et `theme` au `$fillable`
-- `app/Http/Controllers/Responsable/ResponsableDemandeController.php` → validation + sauvegarde des 2 nouveaux champs, services groupés par département
-- `resources/views/responsable/demandes/create.blade.php` → nouveau champ "Type de stage" (select) + "Thème / Sujet" (texte), select de service maintenant regroupé par département (optgroup)
-- `resources/views/responsable/demandes/show.blade.php` → affichage du type de stage et du thème dans le détail
+## Ce qu'il reste à faire (si tu veux continuer)
+Les autres pages Étudiant (Mes demandes détaillées, formulaire de demande en plusieurs étapes, Documents, Notifications, Profil) gardent encore leur ancien style — je peux les reprendre avec le même design dès que tu veux continuer.
 
-## Après copie, dans l'ordre
-```bash
-php artisan migrate
-php artisan db:seed --class=DepartementServiceSeeder
-composer dump-autoload
-php artisan view:clear
-```
-
-## Test
-1. Va sur "Nouvelle demande (physique)"
-2. Le menu déroulant "Service demandé" doit maintenant afficher tes départements comme groupes (Secrétariat Général, Division Administrative et Financière, etc.) avec leurs services dedans
-3. Remplis "Type de stage" (obligatoire) et "Thème" (optionnel)
-4. Valide et vérifie que ces 2 infos apparaissent bien sur la page de détail de la demande créée
+## Important
+Le zip précédent avait été perdu suite à une réinitialisation technique de mon environnement de travail en cours de route — j'ai tout reconstruit à l'identique à partir de mémoire pour ne rien perdre de ce qu'on avait fait ensemble.

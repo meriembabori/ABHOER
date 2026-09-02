@@ -1,355 +1,216 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.responsable')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Tableau de bord')
+@section('page-title', 'Tableau de bord')
+@section('page-description', 'Vue d\'ensemble des demandes de stage et des affectations.')
 
-    <title>Dashboard Responsable - ABHOER</title>
+@section('content')
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+@php
+    $statutData = [
+        ['label' => 'En attente', 'value' => $demandesEnAttente, 'color' => '#d97706'],
+        ['label' => 'Infos demandées', 'value' => $demandesInfosDemandees, 'color' => '#7c3aed'],
+        ['label' => 'Acceptées', 'value' => $demandesAcceptees, 'color' => '#16a34a'],
+        ['label' => 'Refusées', 'value' => $demandesRefusees, 'color' => '#dc2626'],
+    ];
+    $statutTotal = max(1, array_sum(array_column($statutData, 'value')));
+    $cumul = 0;
+    $gradientParts = [];
+    foreach ($statutData as $s) {
+        $start = $cumul / $statutTotal * 360;
+        $cumul += $s['value'];
+        $end = $cumul / $statutTotal * 360;
+        $gradientParts[] = "{$s['color']} {$start}deg {$end}deg";
+    }
+    $conicGradient = 'conic-gradient(' . implode(', ', $gradientParts) . ')';
+@endphp
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #333;
-        }
+<style>
+    .donut { width: 120px; height: 120px; border-radius: 50%; background: {{ $conicGradient }}; position: relative; flex-shrink: 0; }
+    .donut::after { content: ''; position: absolute; inset: 18px; background: white; border-radius: 50%; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-bottom: 8px; color: var(--resp-text); }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .bar-row { margin-bottom: 14px; }
+    .bar-row .bar-label { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 5px; color: #475569; }
+    .bar-track { height: 8px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--resp-blue), var(--resp-blue-dark)); border-radius: 6px; }
+</style>
 
-        .navbar {
-            background: linear-gradient(135deg, #1a7a86, #2fa9b0);
-            color: white;
-            padding: 18px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<div class="container-fluid px-0">
 
-        .navbar h1 {
-            font-size: 22px;
-        }
-
-        .navbar nav a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .navbar nav a:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .logout button {
-            background: white;
-            color: #1a7a86;
-            border: none;
-            padding: 9px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .container {
-            padding: 30px;
-        }
-
-        .welcome {
-            margin-bottom: 25px;
-        }
-
-        .welcome h2 {
-            margin-bottom: 8px;
-        }
-
-        .welcome p {
-            color: #666;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 12px;
-        }
-
-        .card .number {
-            font-size: 30px;
-            font-weight: bold;
-            color: #1a7a86;
-        }
-
-        .card.pending .number { color: #d97706; }
-        .card.infos .number { color: #6d28d9; }
-        .card.accepted .number { color: #16a34a; }
-        .card.refused .number { color: #dc2626; }
-        .card.ongoing .number { color: #0891b2; }
-
-        .actions-rapides {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: #1a7a86;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #1a7a86;
-            border: 1px solid #1a7a86;
-        }
-
-        .table-section {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-        }
-
-        .table-section h3 {
-            margin-bottom: 15px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 10px 8px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        th {
-            color: #666;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-EN_ATTENTE { background: #fef3c7; color: #92400e; }
-        .badge-INFOS_DEMANDEES { background: #ede9fe; color: #5b21b6; }
-        .badge-ACCEPTEE { background: #dcfce7; color: #166534; }
-        .badge-REFUSEE { background: #fee2e2; color: #991b1b; }
-
-        @media (max-width: 1000px) {
-            .cards { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 600px) {
-            .cards { grid-template-columns: 1fr; }
-            .container { padding: 15px; }
-            .actions-rapides { flex-direction: column; }
-        }
-            /* --- Identité visuelle ABHOER (logo + vagues) --- */
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .navbar-logo {
-            height: 42px;
-            width: auto;
-            background: white;
-            border-radius: 8px;
-            padding: 3px 6px;
-        }
-
-        .navbar-brand h1 {
-            font-size: 19px;
-            line-height: 1.1;
-        }
-
-        .navbar-subtitle {
-            display: block;
-            font-size: 11px;
-            opacity: 0.85;
-            letter-spacing: 0.3px;
-            margin-top: 2px;
-        }
-
-        .wave-divider {
-            line-height: 0;
-            margin-top: -1px;
-        }
-
-        .wave-divider svg {
-            width: 100%;
-            height: 26px;
-            display: block;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <div class="navbar">
-
-        <div class="navbar-brand">
-            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="navbar-logo">
-            <div>
-                <h1>ABHOER</h1>
-                <span class="navbar-subtitle">Espace Responsable</span>
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="resp-stat-card">
+                <div class="resp-stat-content">
+                    <div>
+                        <div class="resp-stat-label">Total demandes</div>
+                        <div class="resp-stat-number">{{ $totalDemandes }}</div>
+                        <div class="resp-stat-description">Demandes enregistrées</div>
+                    </div>
+                    <div class="resp-stat-icon icon-primary"><i class="bi bi-file-earmark-text"></i></div>
+                </div>
             </div>
         </div>
 
-        <div class="navbar-right">
-            <nav>
-                <a href="{{ route('responsable.dashboard') }}">Tableau de bord</a>
-                <a href="{{ route('responsable.demandes.index') }}">Demandes</a>
-                <a href="{{ route('responsable.stages.index') }}">Suivi des stages</a>
-                <a href="{{ route('responsable.historique.index') }}">Historique</a>
-                <a href="{{ route('responsable.demandes.create') }}">Nouvelle demande (physique)</a>
-            </nav>
-
-            <div class="logout">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit">Se déconnecter</button>
-                </form>
+        <div class="col-xl-3 col-md-6">
+            <div class="resp-stat-card">
+                <div class="resp-stat-content">
+                    <div>
+                        <div class="resp-stat-label">En attente</div>
+                        <div class="resp-stat-number text-warning">{{ $demandesEnAttente }}</div>
+                        <div class="resp-stat-description">À traiter</div>
+                    </div>
+                    <div class="resp-stat-icon icon-warning"><i class="bi bi-hourglass-split"></i></div>
+                </div>
             </div>
         </div>
 
+        <div class="col-xl-3 col-md-6">
+            <div class="resp-stat-card">
+                <div class="resp-stat-content">
+                    <div>
+                        <div class="resp-stat-label">Acceptées</div>
+                        <div class="resp-stat-number text-success">{{ $demandesAcceptees }}</div>
+                        <div class="resp-stat-description">Demandes acceptées</div>
+                    </div>
+                    <div class="resp-stat-icon icon-success"><i class="bi bi-check-circle"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="resp-stat-card">
+                <div class="resp-stat-content">
+                    <div>
+                        <div class="resp-stat-label">Refusées</div>
+                        <div class="resp-stat-number text-danger">{{ $demandesRefusees }}</div>
+                        <div class="resp-stat-description">Demandes refusées</div>
+                    </div>
+                    <div class="resp-stat-icon icon-danger"><i class="bi bi-x-circle"></i></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path fill="#9bd9d6" d="M0,20 C240,40 480,0 720,15 C960,30 1200,5 1440,20 L1440,40 L0,40 Z"></path>
-        </svg>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+            <div class="card p-4 h-100">
+                <h6 class="mb-3">Stages en cours</h6>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="resp-stat-icon icon-primary" style="width:52px;height:52px;font-size:22px;"><i class="bi bi-play-circle-fill"></i></div>
+                    <div>
+                        <div class="resp-stat-number" style="font-size:28px;">{{ $stagesEnCours }}</div>
+                        <div class="resp-stat-description">stagiaires actuellement en poste</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 h-100">
+                <h6 class="mb-3">Attestations</h6>
+                <div class="d-flex justify-content-between text-center">
+                    <div>
+                        <div class="resp-stat-number text-warning" style="font-size:20px;">{{ $attestationsEnPreparation }}</div>
+                        <div class="resp-stat-description">En préparation</div>
+                    </div>
+                    <div>
+                        <div class="resp-stat-number text-primary" style="font-size:20px;">{{ $attestationsPretes }}</div>
+                        <div class="resp-stat-description">Prêtes</div>
+                    </div>
+                    <div>
+                        <div class="resp-stat-number text-success" style="font-size:20px;">{{ $attestationsRemises }}</div>
+                        <div class="resp-stat-description">Remises</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 h-100 d-flex flex-column justify-content-center gap-2">
+                <a href="{{ route('responsable.attestations.index') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-award-fill me-1"></i> Gérer les attestations
+                </a>
+                <a href="{{ route('responsable.demandes.index') }}" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Voir toutes les demandes
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-
-        @if (session('success'))
-            <div style="background:#dcfce7;color:#166534;padding:12px 18px;border-radius:8px;margin-bottom:20px;">
-                {{ session('success') }}
+    <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <h6 class="mb-3">Répartition par statut</h6>
+                <div class="d-flex align-items-center gap-4">
+                    <div class="donut"></div>
+                    <div>
+                        @foreach ($statutData as $s)
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background:{{ $s['color'] }};"></span>
+                                {{ $s['label'] }} — <strong>{{ $s['value'] }}</strong>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
-        @endif
-
-        <div class="welcome">
-            <h2>Tableau de bord</h2>
-            <p>Vue d'ensemble des demandes de stage et des affectations.</p>
         </div>
 
-        <div class="cards">
-
-            <div class="card">
-                <h3>Total demandes</h3>
-                <div class="number">{{ $totalDemandes }}</div>
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h6 class="mb-3">Demandes par service</h6>
+                @forelse ($demandesParService as $service)
+                    <div class="bar-row">
+                        <div class="bar-label">
+                            <span>{{ $service->nomService }}</span>
+                            <span>{{ $service->demandes_count }}</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ round($service->demandes_count / $maxParService * 100) }}%;"></div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-muted small">Aucune demande enregistrée pour le moment.</p>
+                @endforelse
             </div>
-
-            <div class="card pending">
-                <h3>En attente</h3>
-                <div class="number">{{ $demandesEnAttente }}</div>
-            </div>
-
-            <div class="card infos">
-                <h3>Infos demandées</h3>
-                <div class="number">{{ $demandesInfosDemandees }}</div>
-            </div>
-
-            <div class="card accepted">
-                <h3>Acceptées</h3>
-                <div class="number">{{ $demandesAcceptees }}</div>
-            </div>
-
-            <div class="card refused">
-                <h3>Refusées</h3>
-                <div class="number">{{ $demandesRefusees }}</div>
-            </div>
-
         </div>
+    </div>
 
-        <div class="actions-rapides">
-            <a href="{{ route('responsable.demandes.index') }}" class="btn btn-secondary">Voir toutes les demandes</a>
-            <a href="{{ route('responsable.demandes.create') }}" class="btn btn-primary">+ Enregistrer une demande physique</a>
-        </div>
-
-        <div class="table-section">
-            <h3>Dernières demandes déposées</h3>
-
-            <table>
+    <div class="card">
+        <div class="card-header bg-white py-3 px-4"><h6 class="mb-0">Dernières demandes déposées</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>N° Demande</th>
                         <th>Candidat</th>
                         <th>Service</th>
-                        <th>Type</th>
                         <th>Statut</th>
                         <th>Date dépôt</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($dernieresDemandes as $demande)
                         <tr>
-                            <td>
-                                <a href="{{ route('responsable.demandes.show', $demande->idDemande) }}" style="color:#1a7a86;text-decoration:none;font-weight:bold;">
-                                    {{ $demande->numeroDemande }}
-                                </a>
-                            </td>
+                            <td class="fw-bold">{{ $demande->numeroDemande }}</td>
                             <td>{{ $demande->candidat->prenom ?? '' }} {{ $demande->candidat->nom ?? '' }}</td>
                             <td>{{ $demande->service->nomService ?? '—' }}</td>
-                            <td>{{ $demande->typeDepot ?? '—' }}</td>
-                            <td><span class="badge badge-{{ $demande->statut }}">{{ $demande->statut }}</span></td>
+                            <td><span class="badge bg-secondary-subtle text-dark">{{ $demande->statut }}</span></td>
                             <td>{{ optional($demande->dateDepot)->format('d/m/Y') }}</td>
+                            <td><a href="{{ route('responsable.demandes.show', $demande->idDemande) }}" class="text-primary"><i class="bi bi-eye"></i></a></td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="6" style="text-align:center;color:#999;padding:20px;">Aucune demande pour le moment.</td>
-                        </tr>
+                        <tr><td colspan="6" class="text-center text-muted py-4">Aucune demande pour le moment.</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-
+        <div class="card-footer bg-white text-center py-3">
+            <a href="{{ route('responsable.demandes.index') }}" class="btn btn-outline-primary btn-sm">Voir toutes les demandes <i class="bi bi-arrow-right"></i></a>
+        </div>
     </div>
 
-</body>
+</div>
 
-</html>
+@endsection
