@@ -169,6 +169,110 @@
 
 
     {{-- ============================================================
+         AJOUTER / METTRE À JOUR LES DOCUMENTS
+    ============================================================ --}}
+
+    @php
+        $statutDemande = strtoupper((string) $demande->statut);
+
+        $peutModifier = in_array(
+            $statutDemande,
+            ['EN_ATTENTE', 'BROUILLON'],
+            true
+        );
+
+        $typesDocuments = [
+            'CIN' => "Copie de la CIN",
+            'CV' => "CV",
+            'Assurance' => "Assurance de stage",
+            'Demande de stage' => "Demande / Lettre de motivation",
+        ];
+    @endphp
+
+    @if($peutModifier)
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0 fw-bold">
+
+                    <i class="bi bi-cloud-upload me-2"></i>
+
+                    Ajouter les documents
+
+                </h5>
+
+                <small class="text-muted">
+                    Les 4 documents suivants sont obligatoires : CIN, CV, Assurance de stage et Demande / Lettre de motivation (PDF, JPG, JPEG ou PNG, 5 Mo max).
+                </small>
+
+            </div>
+
+            <div class="card-body">
+
+                <form
+                    action="{{ route('etudiant.demandes.documents.store', ['idDemande' => $demande->idDemande]) }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    @csrf
+
+                    <div class="row g-3">
+
+                        @foreach($typesDocuments as $type => $label)
+
+                            <div class="col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    {{ $label }}
+                                </label>
+
+                                <input
+                                    type="hidden"
+                                    name="documents[{{ $loop->index }}][type]"
+                                    value="{{ $type }}"
+                                >
+
+                                <input
+                                    type="file"
+                                    name="documents[{{ $loop->index }}][fichier]"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    class="form-control @error('documents.' . $loop->index . '.fichier') is-invalid @enderror"
+                                >
+
+                                @error('documents.' . $loop->index . '.fichier')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end">
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload me-1"></i>
+                            Enregistrer les documents
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- ============================================================
          DOCUMENTS
     ============================================================ --}}
 

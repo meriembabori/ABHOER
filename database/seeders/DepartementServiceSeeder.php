@@ -22,44 +22,43 @@ class DepartementServiceSeeder extends Seeder
                     'Service Contrôle de Gestion et Audit Interne',
                 ],
             ],
-            'Division Administrative et Financière' => [
-                'description' => 'Gestion administrative, financière et des ressources humaines.',
-                'services' => [
-                    'Service Ressources Humaines et Moyens Généraux',
-                    'Service Finances et Programmation',
-                    'Service Administratif et Financier',
-                    'Service Aides et Redevance',
-                    'Service Comptabilité et Marchés',
-                ],
-            ],
             'Division Évaluation et Planification des Ressources en Eau' => [
-                'description' => 'Évaluation, planification et qualité des ressources en eau.',
+                'description' => 'Évaluation et planification des ressources en eau.',
                 'services' => [
-                    'Service Évaluation, Planification et Gestion de l\'Eau',
+                    'Service Suivi et Évaluation des Ressources en Eau',
                     'Service Planification des Ressources en Eau et Études',
-                    'Service Qualité des Ressources en Eau',
                 ],
             ],
             'Division Gestion Durable des Ressources en Eau' => [
-                'description' => 'Suivi, gestion et développement durable des ressources en eau.',
+                'description' => 'Gestion durable, développement et qualité des ressources en eau.',
                 'services' => [
-                    'Service Suivi et Évaluation des Ressources en Eau',
                     'Service Gestion et Développement des Ressources en Eau',
                     'Service Travaux et Aménagements Hydrauliques',
+                    'Service Qualité des Ressources en Eau',
                 ],
             ],
             'Division Domaine Public Hydraulique' => [
                 'description' => 'Gestion, contrôle et affaires juridiques du Domaine Public Hydraulique (DPH).',
                 'services' => [
                     'Service Gestion du DPH',
-                    'Service Gestion et Contrôle du DPH',
                     'Service des Affaires Juridiques et Contentieux',
+                    'Service Aides et Redevance',
+                ],
+            ],
+            'Division Administrative et Financière' => [
+                'description' => 'Gestion administrative, financière et des ressources humaines.',
+                'services' => [
+                    'Service Ressources Humaines et Moyens Généraux',
+                    'Service Finances et Programmation',
+                    'Service Comptabilité et Marchés',
                 ],
             ],
             'Délégation' => [
                 'description' => 'Représentation provinciale de l\'agence.',
                 'services' => [
-                    'Service Administratif et Financier (Délégation)',
+                    'Service Évaluation, Planification et Gestion de l\'Eau',
+                    'Service Gestion et Contrôle du DPH',
+                    'Service Administratif et Financier',
                 ],
             ],
         ];

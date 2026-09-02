@@ -101,15 +101,15 @@ class AdminDemandeController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Filtre par type de dépôt
+        | Filtre par type de stage
         |--------------------------------------------------------------------------
         */
 
-        if ($request->filled('typeDepot')) {
+        if ($request->filled('typeStage')) {
 
             $query->where(
-                'typeDepot',
-                $request->input('typeDepot')
+                'typeStage',
+                $request->input('typeStage')
             );
         }
 

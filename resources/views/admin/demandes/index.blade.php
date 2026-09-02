@@ -209,11 +209,11 @@
                     <div class="col-lg-2">
 
                         <label class="form-label fw-semibold">
-                            Type de dépôt
+                            Type de stage
                         </label>
 
                         <select
-                            name="typeDepot"
+                            name="typeStage"
                             class="form-select"
                         >
 
@@ -222,24 +222,31 @@
                             </option>
 
                             <option
-                                value="Stage technique"
-                                {{ request('typeDepot') === 'Stage technique' ? 'selected' : '' }}
-                            >
-                                Stage technique
-                            </option>
-
-                            <option
                                 value="Stage d'observation"
-                                {{ request('typeDepot') === "Stage d'observation" ? 'selected' : '' }}
+                                {{ request('typeStage') === "Stage d'observation" ? 'selected' : '' }}
                             >
                                 Stage d'observation
                             </option>
 
                             <option
-                                value="Stage PFE"
-                                {{ request('typeDepot') === 'Stage PFE' ? 'selected' : '' }}
+                                value="Stage d'initiation"
+                                {{ request('typeStage') === "Stage d'initiation" ? 'selected' : '' }}
                             >
-                                Stage PFE
+                                Stage d'initiation
+                            </option>
+
+                            <option
+                                value="Stage technique"
+                                {{ request('typeStage') === 'Stage technique' ? 'selected' : '' }}
+                            >
+                                Stage technique
+                            </option>
+
+                            <option
+                                value="Stage de fin d'études (PFE)"
+                                {{ request('typeStage') === "Stage de fin d'études (PFE)" ? 'selected' : '' }}
+                            >
+                                Stage de fin d'études (PFE)
                             </option>
 
                         </select>

@@ -105,16 +105,16 @@
                     <div class="col-md-6">
 
                         <label
-                            for="typeDepot"
+                            for="typeStage"
                             class="form-label fw-semibold"
                         >
                             Type de stage
                         </label>
 
                         <select
-                            name="typeDepot"
-                            id="typeDepot"
-                            class="form-select @error('typeDepot') is-invalid @enderror"
+                            name="typeStage"
+                            id="typeStage"
+                            class="form-select @error('typeStage') is-invalid @enderror"
                             required
                         >
 
@@ -123,29 +123,36 @@
                             </option>
 
                             <option
-                                value="Stage obligatoire"
-                                {{ old('typeDepot') === 'Stage obligatoire' ? 'selected' : '' }}
+                                value="Stage d'observation"
+                                {{ old('typeStage') === "Stage d'observation" ? 'selected' : '' }}
                             >
-                                Stage obligatoire
+                                Stage d'observation
                             </option>
 
                             <option
-                                value="Stage volontaire"
-                                {{ old('typeDepot') === 'Stage volontaire' ? 'selected' : '' }}
+                                value="Stage d'initiation"
+                                {{ old('typeStage') === "Stage d'initiation" ? 'selected' : '' }}
                             >
-                                Stage volontaire
+                                Stage d'initiation
                             </option>
 
                             <option
-                                value="Stage de fin d'études"
-                                {{ old('typeDepot') === 'Stage de fin d’études' ? 'selected' : '' }}
+                                value="Stage technique"
+                                {{ old('typeStage') === 'Stage technique' ? 'selected' : '' }}
                             >
-                                Stage de fin d'études
+                                Stage technique
+                            </option>
+
+                            <option
+                                value="Stage de fin d'études (PFE)"
+                                {{ old('typeStage') === "Stage de fin d'études (PFE)" ? 'selected' : '' }}
+                            >
+                                Stage de fin d'études (PFE)
                             </option>
 
                         </select>
 
-                        @error('typeDepot')
+                        @error('typeStage')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>

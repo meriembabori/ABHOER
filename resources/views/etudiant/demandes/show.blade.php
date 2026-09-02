@@ -75,7 +75,7 @@
                     <strong>Type de stage</strong>
 
                     <p class="text-muted">
-                        {{ $demande->typeDepot }}
+                        {{ $demande->typeStage ?? '—' }}
                     </p>
 
                 </div>

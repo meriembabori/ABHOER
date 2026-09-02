@@ -91,7 +91,7 @@
                             </th>
 
                             <td>
-                                {{ $demande->typeDepot }}
+                                {{ $demande->typeStage ?? '—' }}
                             </td>
                         </tr>
 

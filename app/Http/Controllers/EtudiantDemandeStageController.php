@@ -107,10 +107,10 @@ class EtudiantDemandeStageController extends Controller
                     'exists:service,idService',
                 ],
 
-                'typeDepot' => [
+                'typeStage' => [
                     'required',
                     'string',
-                    'max:50',
+                    'max:100',
                 ],
 
                 'dateDebut' => [
@@ -146,7 +146,7 @@ class EtudiantDemandeStageController extends Controller
                 'idService.exists' =>
                     'Le service sélectionné est invalide.',
 
-                'typeDepot.required' =>
+                'typeStage.required' =>
                     'Veuillez sélectionner le type de stage.',
 
                 'dateDebut.required' =>
@@ -224,7 +224,8 @@ class EtudiantDemandeStageController extends Controller
             'theme' => $validated['theme'],
             'motivation' => $validated['motivation'],
             'statut' => 'EN_ATTENTE',
-            'typeDepot' => $validated['typeDepot'],
+            'typeDepot' => 'EN_LIGNE',
+            'typeStage' => $validated['typeStage'],
             'observation' => null,
         ]);
 
