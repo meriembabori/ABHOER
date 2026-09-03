@@ -34,6 +34,7 @@ class Candidat extends Model
         'telephone',
         'adresse',
         'email',
+        'photo',
         'etablissement',
         'formation',
         'niveauEtude',

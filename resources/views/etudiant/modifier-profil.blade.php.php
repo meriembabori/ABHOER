@@ -302,11 +302,58 @@
                 <form
                     method="POST"
                     action="{{ route('etudiant.profil.update') }}"
+                    enctype="multipart/form-data"
                 >
 
                     @csrf
 
                     @method('PUT')
+
+                    {{-- PHOTO DE PROFIL --}}
+                    <div class="section-title">
+
+                        <i class="bi bi-camera me-2"></i>
+
+                        Photo de profil
+
+                    </div>
+
+                    <div class="row g-4 align-items-center mb-2">
+
+                        <div class="col-auto">
+                            @if ($candidat->photo)
+                                <img
+                                    src="{{ asset('storage/' . $candidat->photo) }}"
+                                    alt="Photo de profil"
+                                    style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb;"
+                                >
+                            @else
+                                <div style="width:72px;height:72px;border-radius:50%;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:#9aa5b1;font-size:26px;border:2px solid #e5e7eb;">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="col">
+                            <input
+                                type="file"
+                                name="photo"
+                                accept=".jpg,.jpeg,.png,.webp"
+                                class="form-control @error('photo') is-invalid @enderror"
+                            >
+
+                            <div class="form-text mt-1">
+                                JPG, PNG ou WEBP — 2 Mo maximum.
+                            </div>
+
+                            @error('photo')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                    </div>
 
                     {{-- INFORMATIONS PERSONNELLES --}}
                     <div class="section-title">

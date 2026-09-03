@@ -8,7 +8,9 @@ use App\Models\Candidat;
 use App\Models\DemandeStage;
 use App\Models\Document;
 use App\Models\Historique;
+use App\Models\Notification;
 use App\Models\Service;
+use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -144,6 +146,13 @@ class ResponsableDemandeController extends Controller
             'ACCEPTEE'
         );
 
+        $this->notifierEtudiant(
+            $demande,
+            'Demande de stage acceptée',
+            "Votre demande de stage {$demande->numeroDemande} a été acceptée.",
+            'SUCCESS'
+        );
+
         return back()->with(
             'success',
             "La demande {$demande->numeroDemande} a été acceptée."
@@ -185,6 +194,14 @@ class ResponsableDemandeController extends Controller
             $validated['motif'] ?? null
         );
 
+        $this->notifierEtudiant(
+            $demande,
+            'Demande de stage refusée',
+            "Votre demande de stage {$demande->numeroDemande} a été refusée." .
+                (!empty($validated['motif']) ? ' Motif : ' . $validated['motif'] : ''),
+            'DANGER'
+        );
+
         return back()->with(
             'success',
             "La demande {$demande->numeroDemande} a été refusée."
@@ -221,6 +238,13 @@ class ResponsableDemandeController extends Controller
             $ancienStatut,
             'INFOS_DEMANDEES',
             $validated['message']
+        );
+
+        $this->notifierEtudiant(
+            $demande,
+            'Informations complémentaires demandées',
+            "Le responsable demande des informations complémentaires pour votre demande {$demande->numeroDemande} : {$validated['message']}",
+            'WARNING'
         );
 
         return back()->with(
@@ -317,6 +341,16 @@ class ResponsableDemandeController extends Controller
             'Affectée au service #' . $validated['idService'],
             $validated['observation'] ?? null
         );
+
+        if ($demande->statut === 'STAGE_EN_COURS' && $ancienStatut !== 'STAGE_EN_COURS') {
+            $this->notifierEtudiant(
+                $demande,
+                'Stage affecté',
+                "Votre stage lié à la demande {$demande->numeroDemande} a été affecté et démarre le " .
+                    \Illuminate\Support\Carbon::parse($validated['dateDebut'])->format('d/m/Y') . '.',
+                'SUCCESS'
+            );
+        }
 
         return back()->with(
             'success',
@@ -744,6 +778,37 @@ class ResponsableDemandeController extends Controller
         } while ($existe);
 
         return $numero;
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     * Créer une notification pour l'étudiant lié à une demande.
+     * --------------------------------------------------------------------------
+     */
+    private function notifierEtudiant(
+        DemandeStage $demande,
+        string $titre,
+        string $message,
+        string $type = 'INFO'
+    ): void {
+
+        $utilisateur = Utilisateur::where(
+            'idCandidat',
+            $demande->idCandidat
+        )->first();
+
+        if (!$utilisateur) {
+            return;
+        }
+
+        Notification::create([
+            'idUtilisateur' => $utilisateur->idUtilisateur,
+            'idDemande' => $demande->idDemande,
+            'titre' => $titre,
+            'message' => $message,
+            'type' => $type,
+            'lu' => false,
+        ]);
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class EtudiantProfilController extends Controller
 {
@@ -157,6 +158,13 @@ class EtudiantProfilController extends Controller
                     'string',
                     'max:50',
                 ],
+
+                'photo' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpg,jpeg,png,webp',
+                    'max:2048',
+                ],
             ],
             [
                 'nom.required' =>
@@ -195,6 +203,23 @@ class EtudiantProfilController extends Controller
         $candidat->niveauEtude = $validated['niveauEtude'] ?? null;
         $candidat->anneeUniversitaire =
             $validated['anneeUniversitaire'] ?? null;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Photo de profil
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->hasFile('photo')) {
+
+            // Supprimer l'ancienne photo si elle existe.
+            if ($candidat->photo && Storage::disk('public')->exists($candidat->photo)) {
+                Storage::disk('public')->delete($candidat->photo);
+            }
+
+            $chemin = $request->file('photo')->store('photos-profil', 'public');
+            $candidat->photo = $chemin;
+        }
 
         $candidat->save();
 

@@ -123,14 +123,7 @@
         .divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; font-size: 12px; color: #94a3b8; }
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
 
-        .btn-sso {
-            width: 100%; padding: 13px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white;
-            color: #334155; font-size: 14px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 9px; transition: border-color .2s;
-        }
-        .btn-sso:hover { border-color: var(--aqua-cyan); }
-        .btn-sso i { color: var(--aqua-cyan-bright); }
-
+        
         .error {
             background: #fef2f2; color: #991b1b; padding: 11px 14px; border-radius: 10px;
             margin-bottom: 20px; font-size: 13px; border-left: 3px solid #ef4444;
@@ -230,11 +223,8 @@
                 <button type="submit"><i class="bi bi-box-arrow-in-right"></i> Se connecter</button>
             </form>
 
-            <div class="divider">ou</div>
+            
 
-            <button type="button" class="btn-sso" disabled title="Bientôt disponible">
-                <i class="bi bi-shield-check"></i> Se connecter avec SSO
-            </button>
 
             <p class="form-footer">Pas encore de compte ? <a href="{{ route('inscription') }}">S'inscrire</a></p>
             <div style="text-align:center;">

@@ -742,10 +742,18 @@
                     </div>
 
 
-                    <i
-                        class="bi bi-person-circle"
-                        style="font-size: 42px;"
-                    ></i>
+                    @if ($candidat->photo)
+                        <img
+                            src="{{ asset('storage/' . $candidat->photo) }}"
+                            alt="Photo de profil"
+                            style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb;"
+                        >
+                    @else
+                        <i
+                            class="bi bi-person-circle"
+                            style="font-size: 42px;"
+                        ></i>
+                    @endif
 
                 </div>
 

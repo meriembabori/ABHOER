@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Candidat;
 use App\Models\DemandeStage;
 use App\Models\Document;
+use App\Models\Notification;
 use App\Models\Service;
+use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -228,6 +230,31 @@ class EtudiantDemandeStageController extends Controller
             'typeStage' => $validated['typeStage'],
             'observation' => null,
         ]);
+
+        /**
+         * Notifier tous les responsables qu'une nouvelle
+         * demande de stage vient d'être déposée.
+         */
+        $responsables = Utilisateur::where(
+            'role',
+            'RESPONSABLE'
+        )->get();
+
+        foreach ($responsables as $responsable) {
+            Notification::create([
+                'idUtilisateur' => $responsable->idUtilisateur,
+                'idDemande' => $demande->idDemande,
+                'titre' => 'Nouvelle demande de stage',
+                'message' =>
+                    'Une nouvelle demande de stage (' .
+                    $numeroDemande .
+                    ') vient d\'être déposée par ' .
+                    $candidat->prenom . ' ' . $candidat->nom .
+                    '.',
+                'type' => 'INFO',
+                'lu' => false,
+            ]);
+        }
 
         return redirect()
             ->route(
@@ -764,6 +791,15 @@ class EtudiantDemandeStageController extends Controller
         if (!$mimeType) {
             $mimeType =
                 'application/octet-stream';
+        }
+
+        /**
+         * Nettoyer tout buffer de sortie déjà rempli
+         * (BOM, espace parasite, etc.) avant d'envoyer
+         * les octets bruts de l'image/PDF.
+         */
+        while (ob_get_level() > 0) {
+            ob_end_clean();
         }
 
         /**
