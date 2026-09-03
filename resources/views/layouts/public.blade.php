@@ -24,9 +24,9 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #1e293b;
-            background: white;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            color: var(--aqua-white);
+            background: var(--aqua-bg-deep-1);
         }
 
         a { text-decoration: none; color: inherit; }
@@ -92,7 +92,7 @@
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        section { padding: 70px 48px; max-width: 1280px; margin: 0 auto; }
+        section { padding: 70px clamp(20px, 4vw, 64px); max-width: 1580px; margin: 0 auto; }
 
         .section-label {
             color: var(--c-teal-dark); font-weight: 700; font-size: 12.5px; letter-spacing: 1.5px;
@@ -108,7 +108,7 @@
         }
 
         .footer-grid {
-            max-width: 1280px; margin: 0 auto;
+            max-width: 1580px; margin: 0 auto;
             display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px;
             padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -126,9 +126,10 @@
         footer a.footer-link:hover { color: white; }
 
         .footer-bottom {
-            max-width: 1280px; margin: 0 auto; padding-top: 20px;
+            max-width: 1580px; margin: 0 auto; padding-top: 20px;
             text-align: center; font-size: 12.5px; color: #64748b;
         }
+        footer { padding-left: clamp(20px, 4vw, 64px); padding-right: clamp(20px, 4vw, 64px); }
 
         @media (max-width: 900px) {
             .navbar-links { display: none; }

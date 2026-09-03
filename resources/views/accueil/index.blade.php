@@ -287,36 +287,49 @@
         .apropos-stats { grid-template-columns: 1fr; }
     }
 
-    .domaines-section { background: var(--c-bg); border-radius: 30px; margin: 0 24px; }
+    .domaines-section { background: var(--aqua-bg-1); border: 1px solid var(--aqua-hairline); border-radius: 30px; margin: 0 24px; }
+    .domaines-section .section-label { color: var(--aqua-cyan); }
+    .domaines-section .section-title { color: var(--aqua-white); }
     .domaines-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; margin-top: 36px; }
     .domaine-card {
-        background: white; border-radius: 16px; padding: 26px 16px; text-align: center;
-        box-shadow: 0 6px 18px rgba(15,23,42,0.05); transition: transform 0.3s;
+        background: rgba(7, 22, 33, 0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--aqua-hairline); border-radius: 16px; padding: 26px 16px; text-align: center;
+        transition: transform 0.3s, border-color .3s;
     }
-    .domaine-card:hover { transform: translateY(-6px); }
+    .domaine-card:hover { transform: translateY(-6px); border-color: rgba(0,217,208,0.35); }
     .domaine-card .ico {
         width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 14px;
-        background: linear-gradient(135deg, var(--c-teal), var(--c-teal-dark));
+        background: linear-gradient(135deg, var(--aqua-turquoise), var(--aqua-blue-deep));
         display: flex; align-items: center; justify-content: center; color: white; font-size: 22px;
+        box-shadow: 0 0 20px rgba(0,217,208,0.2);
     }
-    .domaine-card p { font-size: 13px; font-weight: 600; color: var(--c-navy); line-height: 1.4; }
+    .domaine-card p { font-size: 13px; font-weight: 600; color: var(--aqua-white-2); line-height: 1.4; }
 
+    #galerie .section-label { color: var(--aqua-cyan); }
+    #galerie .section-title { color: var(--aqua-white); }
     .gallery-carousel { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 36px; }
-    .gallery-item { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 8px 22px rgba(15,23,42,0.08); }
+    .gallery-item { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 4/3; border: 1px solid var(--aqua-hairline); }
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
     .gallery-item:hover img { transform: scale(1.08); }
     .gallery-caption {
         position: absolute; inset: auto 0 0 0; padding: 14px 16px 12px;
-        background: linear-gradient(0deg, rgba(15,23,42,0.85), transparent); color: white; font-size: 12.5px; line-height: 1.4;
+        background: linear-gradient(0deg, rgba(1,15,25,0.92), transparent); color: white; font-size: 12.5px; line-height: 1.4;
     }
 
     .cta-section {
-        background: linear-gradient(135deg, var(--c-teal-dark), var(--c-teal));
-        border-radius: 28px; margin: 0 24px 70px; padding: 50px 40px; text-align: center; color: white;
+        background: linear-gradient(135deg, #062935, var(--aqua-bg-1));
+        border: 1px solid var(--aqua-hairline);
+        border-radius: 28px; margin: 0 24px 70px; padding: 50px 40px; text-align: center; color: var(--aqua-white);
+        position: relative; overflow: hidden;
     }
-    .cta-section h2 { font-size: 26px; margin-bottom: 12px; }
-    .cta-section p { opacity: 0.92; margin-bottom: 26px; font-size: 14.5px; }
-    .cta-section .btn-outline { background: white; }
+    .cta-section::before {
+        content: ''; position: absolute; inset: 0;
+        background: radial-gradient(circle at 30% 20%, rgba(0,217,208,0.18), transparent 60%);
+        pointer-events: none;
+    }
+    .cta-section h2 { font-size: 26px; margin-bottom: 12px; position: relative; z-index: 1; color: var(--aqua-white); }
+    .cta-section p { color: var(--aqua-text-2); margin-bottom: 26px; font-size: 14.5px; position: relative; z-index: 1; }
+    .cta-section .aqua-btn-primary { position: relative; z-index: 1; display: inline-flex; }
 
     @media (max-width: 1000px) {
         .hero-inner { grid-template-columns: 1fr; }
@@ -516,7 +529,7 @@
         </div>
 
         <div style="text-align:center;margin-top:30px;">
-            <a href="{{ route('accueil.localisation') }}" class="btn btn-outline">Voir toutes les photos <i class="bi bi-arrow-right"></i></a>
+            <a href="{{ route('accueil.localisation') }}" class="aqua-btn-secondary">Voir toutes les photos <i class="bi bi-arrow-right"></i></a>
         </div>
     </section>
 
@@ -524,7 +537,7 @@
         <div class="cta-section reveal">
             <h2>Prêt à déposer votre demande de stage ?</h2>
             <p>Créez votre compte et suivez le traitement de votre dossier en temps réel.</p>
-            <a href="{{ route('inscription') }}" class="btn btn-outline"><i class="bi bi-file-earmark-plus-fill"></i> S'inscrire maintenant</a>
+            <a href="{{ route('inscription') }}" class="aqua-btn-primary"><i class="bi bi-file-earmark-plus-fill"></i> S'inscrire maintenant</a>
         </div>
     </section>
 
