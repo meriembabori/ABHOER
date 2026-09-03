@@ -64,7 +64,7 @@
             @forelse ($demande->documents as $document)
                 <div class="d-flex justify-content-between border-bottom py-2 small">
                     <span>{{ $document->nomFichier }} <span class="text-muted">({{ $document->typeDocument }})</span></span>
-                    <a href="{{ \Illuminate\Support\Facades\Storage::url($document->cheminFichier) }}" target="_blank" class="text-primary fw-bold">Ouvrir</a>
+                    <a href="{{ route('responsable.demandes.documents.voir', ['id' => $demande->idDemande, 'idDocument' => $document->idDocument]) }}" target="_blank" class="text-primary fw-bold">Ouvrir</a>
                 </div>
             @empty
                 <p class="text-muted small">Aucun document pour cette demande.</p>

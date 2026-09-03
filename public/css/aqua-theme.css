@@ -1,0 +1,151 @@
+/* =========================================================
+   ABHOER — AQUA / SMART WATER THEME
+   Shared design system for the redesigned dark public pages
+   (home hero, services, localisation, login, à propos...)
+   ========================================================= */
+
+:root {
+    --aqua-bg-deep-1: #01111D;
+    --aqua-bg-1: #021522;
+    --aqua-bg-2: #031B2A;
+    --aqua-cyan: #00D9D0;
+    --aqua-cyan-bright: #00F0E5;
+    --aqua-turquoise: #12CFC5;
+    --aqua-blue-water: #008FD5;
+    --aqua-blue-deep: #005B91;
+    --aqua-white: #F5FAFC;
+    --aqua-white-2: #D6E2E8;
+    --aqua-text-2: #9FB2BE;
+    --aqua-green-env: #8BD63C;
+    --aqua-green-light: #B4E84A;
+    --aqua-violet: #8B5CF6;
+    --aqua-hairline: rgba(255, 255, 255, 0.10);
+    --aqua-glass: rgba(5, 25, 38, 0.70);
+}
+
+/* The immersive dark navbar replaces the site's original light sticky navbar
+   on every page that opts into the aqua theme. */
+body:has(.aqua-nav) .navbar { display: none; }
+
+.aqua-font { font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+/* ---- Navbar (shared across all aqua pages) ---- */
+.aqua-nav {
+    position: sticky; top: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(20px, 4vw, 64px);
+    height: 84px;
+    background: rgba(4, 15, 24, 0.72);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--aqua-hairline);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    animation: aquaFadeDown 0.8s ease both;
+}
+.aqua-nav__brand { display: flex; align-items: center; gap: 12px; }
+.aqua-nav__brand img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; background: rgba(255, 255, 255, 0.92); padding: 3px; }
+.aqua-nav__brand-name { font-weight: 700; font-size: 21px; color: var(--aqua-white); line-height: 1.15; }
+.aqua-nav__brand-sub { font-size: 12.5px; color: var(--aqua-white-2); display: block; }
+
+.aqua-nav__links { display: flex; align-items: center; gap: 34px; }
+.aqua-nav__links a { font-size: 15px; font-weight: 500; color: var(--aqua-white-2); transition: color .2s; display: inline-flex; align-items: center; gap: 6px; }
+.aqua-nav__links a:hover, .aqua-nav__links a.active { color: var(--aqua-cyan); }
+.aqua-nav__links a.active i { color: var(--aqua-cyan); }
+
+.aqua-nav__actions { display: flex; align-items: center; gap: 12px; }
+.aqua-icon-btn {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex; align-items: center; justify-content: center; color: var(--aqua-white);
+    font-size: 17px; cursor: pointer; transition: box-shadow .25s, border-color .25s;
+}
+.aqua-icon-btn:hover { border-color: var(--aqua-cyan); box-shadow: 0 0 20px rgba(0, 220, 210, 0.35); }
+
+.aqua-btn-ghost {
+    display: inline-flex; align-items: center; gap: 9px;
+    height: 50px; padding: 0 24px; border-radius: 30px;
+    background: rgba(15, 35, 50, 0.85); border: 1px solid var(--aqua-hairline);
+    color: var(--aqua-white); font-size: 14.5px; font-weight: 600; transition: border-color .2s, transform .2s;
+}
+.aqua-btn-ghost:hover { border-color: rgba(255, 255, 255, 0.3); transform: translateY(-1px); }
+
+.aqua-btn-solid {
+    display: inline-flex; align-items: center; gap: 9px;
+    height: 50px; padding: 0 24px; border-radius: 30px;
+    background: linear-gradient(135deg, #11C9C0, #1AD6C5); color: #012027;
+    font-size: 14.5px; font-weight: 700; box-shadow: 0 0 25px rgba(0, 220, 210, 0.25);
+    transition: transform .2s, box-shadow .2s;
+}
+.aqua-btn-solid:hover { transform: translateY(-2px); box-shadow: 0 0 34px rgba(0, 220, 210, 0.4); }
+
+@media (max-width: 1100px) {
+    .aqua-nav__links { display: none; }
+}
+@media (max-width: 560px) {
+    .aqua-nav { padding: 0 16px; }
+    .aqua-btn-ghost span, .aqua-nav__brand-sub { display: none; }
+}
+
+/* ---- Generic buttons reused in page bodies ---- */
+.aqua-btn-primary {
+    display: inline-flex; align-items: center; gap: 10px; justify-content: center;
+    height: 58px; padding: 0 26px; border-radius: 14px;
+    background: linear-gradient(135deg, #11C9C0, #1AD6C5); color: #012027;
+    font-weight: 700; font-size: 15px; box-shadow: 0 0 25px rgba(0, 220, 210, 0.28);
+    transition: transform .2s, box-shadow .2s; border: none; cursor: pointer;
+}
+.aqua-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0, 220, 210, 0.4); }
+.aqua-btn-secondary {
+    display: inline-flex; align-items: center; gap: 10px; justify-content: center;
+    height: 58px; padding: 0 26px; border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.20);
+    color: var(--aqua-white); font-weight: 600; font-size: 15px; transition: border-color .2s, box-shadow .2s;
+}
+.aqua-btn-secondary:hover { border-color: var(--aqua-cyan); box-shadow: 0 0 18px rgba(0, 217, 208, 0.2); }
+
+/* ---- Badge pill (used above headings) ---- */
+.aqua-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 9px 18px; border-radius: 30px; margin-bottom: 22px;
+    background: rgba(0, 217, 208, 0.10); border: 1px solid rgba(0, 217, 208, 0.30);
+    color: var(--aqua-cyan); font-size: 13.5px; font-weight: 600;
+    backdrop-filter: blur(6px);
+}
+
+/* ---- Glass panel base ---- */
+.aqua-glass-panel {
+    background: rgba(8, 25, 37, 0.80); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--aqua-hairline); border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Full-bleed dark page wrapper (for pages fully redone in the aqua theme) ---- */
+.aqua-page {
+    background: var(--aqua-bg-deep-1);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--aqua-white);
+}
+.aqua-breadcrumb {
+    font-size: 12.5px; color: var(--aqua-text-2); padding: 22px clamp(20px, 4vw, 64px) 0;
+}
+.aqua-breadcrumb a { color: var(--aqua-cyan); font-weight: 600; }
+
+.aqua-section-label {
+    color: var(--aqua-cyan); font-weight: 700; font-size: 12.5px; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 10px;
+}
+
+/* ---- Shared micro-interaction keyframes ---- */
+@keyframes aquaFadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes aquaFadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes aquaSlideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes aquaShimmer { 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes aquaMeshPulse { 0%, 100% { opacity: 0.25; r: 1.6; } 50% { opacity: 1; r: 3; } }
+@keyframes aquaMeshFlow { to { stroke-dashoffset: -320; } }
+@keyframes aquaBobDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+/* Subtle animated topographic mesh overlay, reused on any dark photo banner */
+.aqua-mesh { position: absolute; inset: 0; opacity: 0.55; mix-blend-mode: screen; pointer-events: none; }
+.aqua-mesh .pulse { animation: aquaMeshPulse 4.5s ease-in-out infinite; transform-origin: center; }
+.aqua-mesh .pulse:nth-child(2n) { animation-delay: 1.1s; }
+.aqua-mesh .pulse:nth-child(3n) { animation-delay: 2.3s; }
+.aqua-mesh .flow { stroke-dasharray: 6 10; animation: aquaMeshFlow 18s linear infinite; }

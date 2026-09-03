@@ -12,6 +12,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ResponsableDemandeController extends Controller
 {
@@ -576,6 +577,71 @@ class ResponsableDemandeController extends Controller
                 'success',
                 "La demande {$demande->numeroDemande} a été enregistrée avec succès."
             );
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     * Ouvrir / afficher un document dans le navigateur.
+     * --------------------------------------------------------------------------
+     */
+    public function voirDocument(int $id, int $idDocument)
+    {
+        $document = Document::where(
+            'idDocument',
+            $idDocument
+        )
+            ->where(
+                'idDemande',
+                $id
+            )
+            ->firstOrFail();
+
+        /**
+         * Vérifier le fichier.
+         */
+        if (
+            !$document->cheminFichier ||
+            !Storage::disk('public')->exists(
+                $document->cheminFichier
+            )
+        ) {
+            abort(
+                404,
+                'Fichier introuvable.'
+            );
+        }
+
+        /**
+         * Chemin physique.
+         */
+        $path = Storage::disk('public')->path(
+            $document->cheminFichier
+        );
+
+        /**
+         * Type MIME.
+         */
+        $mimeType = mime_content_type($path);
+
+        if (!$mimeType) {
+            $mimeType = 'application/octet-stream';
+        }
+
+        /**
+         * Afficher le document dans le navigateur.
+         */
+        return response()->file(
+            $path,
+            [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' =>
+                    'inline; filename="' .
+                    addslashes(
+                        $document->nomFichier
+                    ) .
+                    '"',
+            ]
+        );
     }
 
     /**

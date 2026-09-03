@@ -680,6 +680,14 @@ Route::prefix('responsable')
             ]
         )->name('demandes.affecter');
 
+        Route::get(
+            '/demandes/{id}/documents/{idDocument}/voir',
+            [
+                ResponsableDemandeController::class,
+                'voirDocument'
+            ]
+        )->name('demandes.documents.voir');
+
         Route::post(
             '/demandes/{id}/documents',
             [
