@@ -1,64 +1,61 @@
-# Notifications — Étudiant ⇄ Responsable (flux complet dans les deux sens)
+# Connexion par login OU par email
 
-## Fichiers dans ce zip
+## Le problème
 
-- **`app/Http/Controllers/Responsable/ResponsableNotificationController.php`** (nouveau)
-  Page de notifications côté Responsable (liste, marquer lu, tout marquer lu).
+La table `utilisateur` (les comptes de connexion) n'avait qu'une colonne
+`login`, pas d'`email` — donc même si le formulaire affichait déjà
+« Adresse e-mail ou identifiant », le contrôleur ne cherchait que par `login`.
 
-- **`resources/views/responsable/notifications/index.blade.php`** (nouveau)
-  Vue correspondante, thème bleu nuit.
+## Fichiers modifiés / créés
 
-- **`routes/web.php`** (modifié)
-  3 routes ajoutées : `responsable.notifications`, `.lire`, `.lire-toutes`.
+- **`database/migrations/2026_09_04_100000_add_email_to_utilisateur_table.php`** (nouveau)
+  Ajoute une colonne `email` (nullable, unique) à `utilisateur`, et
+  **rétro-remplit automatiquement** l'email des comptes étudiants déjà
+  existants à partir de leur fiche `candidat` (qui a toujours eu un email).
+  → Aucune action manuelle nécessaire pour les étudiants déjà inscrits.
 
-- **`resources/views/layouts/responsable.blade.php`** (modifié)
-  La cloche de la topbar Responsable est un vrai lien, badge = vrai nombre de non-lues.
+- **`app/Models/Utilisateur.php`** (modifié)
+  Ajout de `'email'` dans `$fillable`.
 
-- **`app/Http/Controllers/EtudiantDemandeStageController.php`** (modifié)
-  **Étudiant → Responsable** : dès qu'un étudiant dépose une demande
-  (`storeInformations`), tous les comptes `RESPONSABLE` reçoivent une notification.
+- **`app/Http/Controllers/InscriptionController.php`** (modifié)
+  À l'inscription, l'email saisi par l'étudiant est maintenant aussi
+  enregistré dans son compte `utilisateur` (avant, il n'était sauvegardé
+  que dans `candidat`).
 
-- **`app/Http/Controllers/Responsable/ResponsableDemandeController.php`** (modifié)
-  **Responsable → Étudiant** (nouveau dans cette version) : l'étudiant reçoit
-  maintenant une notification automatique à chacune de ces actions du responsable :
-
-  | Action du responsable          | Méthode         | Notification envoyée à l'étudiant                     | Type     |
-  |---------------------------------|-----------------|---------------------------------------------------------|----------|
-  | Accepter la demande             | `accepter()`    | "Votre demande ... a été acceptée."                     | SUCCESS  |
-  | Refuser la demande              | `refuser()`     | "Votre demande ... a été refusée." (+ motif si fourni)  | DANGER   |
-  | Demander des infos complém.     | `demanderInfos()` | "Le responsable demande des informations complémentaires : ..." | WARNING  |
-  | Affecter à un service (stage démarre) | `affecter()` | "Votre stage ... a été affecté et démarre le JJ/MM/AAAA." | SUCCESS  |
-
-  Ces notifications utilisent une nouvelle méthode privée `notifierEtudiant()`
-  qui retrouve le compte `Utilisateur` lié au `Candidat` de la demande
-  (`idCandidat`), et ne fait rien si aucun compte utilisateur n'est trouvé
-  (cas d'une demande déposée physiquement sans compte en ligne — pas une erreur).
+- **`app/Http/Controllers/LoginController.php`** (modifié)
+  La recherche du compte se fait maintenant par :
+  ```php
+  Utilisateur::where('login', $validated['login'])
+      ->orWhere('email', $validated['login'])
+      ->first();
+  ```
+  Le champ du formulaire s'appelle toujours `login`, mais accepte
+  indifféremment un identifiant ou une adresse email.
 
 ## Intégration
 
-1. Copie chaque fichier à son emplacement exact.
-2. Aucune migration nécessaire.
-3. Vide les caches :
+1. Copie les 4 fichiers à leurs emplacements exacts.
+2. Lance la migration :
    ```bash
-   php artisan route:clear && php artisan view:clear
+   php artisan migrate
+   ```
+3. Vide les caches si besoin :
+   ```bash
+   php artisan config:clear && php artisan route:clear
    ```
 
-## Test du flux complet dans les deux sens
+## Test
 
-1. **Étudiant → Responsable** : un étudiant dépose une demande
-   → le(s) responsable(s) voient la notification et le badge sur leur cloche.
-2. **Responsable → Étudiant** : le responsable accepte / refuse / demande des
-   infos / affecte un service sur cette demande
-   → l'étudiant voit apparaître la notification correspondante dans
-   `/etudiant/notifications`, avec un lien "Voir la demande".
+- Étudiant existant → se connecte avec son **login habituel** (fonctionne
+  comme avant) **ou** avec l'**email** utilisé à l'inscription (nouveau).
+- Nouvel étudiant qui s'inscrit → peut immédiatement utiliser les deux.
 
-## Points d'attention
+## À savoir
 
-- Les notifications Étudiant→Responsable partent vers **tous** les comptes
-  `RESPONSABLE` (pas de ciblage par service, la structure actuelle ne le
-  permet pas encore).
-- `affecter()` ne notifie que si le statut passe réellement à `STAGE_EN_COURS`
-  (c'est-à-dire une demande déjà `ACCEPTEE` qu'on vient d'affecter) — une
-  simple modification de l'affectation sur un statut déjà `STAGE_EN_COURS`
-  ne redéclenche pas de notification, pour éviter le spam si le responsable
-  ajuste les dates plusieurs fois.
+- Les comptes **Responsable / Administrateur / Agent** créés depuis
+  l'espace Admin n'ont pas d'email pour l'instant (le formulaire de
+  création ne demande pas d'email) — ils continueront donc à se connecter
+  uniquement par login, tant qu'aucun email ne leur est renseigné.
+  Si tu veux que je l'ajoute aussi pour ces rôles (champ email dans le
+  formulaire de création admin + migration déjà prête à l'accueillir),
+  dis-le-moi.

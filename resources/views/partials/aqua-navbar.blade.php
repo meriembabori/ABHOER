@@ -24,7 +24,7 @@
     </div>
 
     <div class="aqua-nav__actions">
-        <button type="button" class="aqua-icon-btn" aria-label="Changer de thème"><i class="bi bi-sun"></i></button>
+        <button type="button" class="aqua-icon-btn js-theme-toggle" aria-label="Changer de thème" aria-pressed="false"><i class="bi bi-sun"></i></button>
         <a href="{{ route('login') }}" class="aqua-btn-ghost"><i class="bi bi-person"></i> <span>Se connecter</span></a>
         <a href="{{ route('inscription') }}" class="aqua-btn-solid">S'inscrire <i class="bi bi-arrow-right"></i></a>
     </div>

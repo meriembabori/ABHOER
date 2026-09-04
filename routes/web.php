@@ -30,7 +30,6 @@ use App\Http\Controllers\Responsable\ResponsableDemandeController;
 use App\Http\Controllers\Responsable\ResponsableHistoriqueController;
 use App\Http\Controllers\Responsable\ResponsableStageController;
 use App\Http\Controllers\Responsable\ResponsableAttestationController;
-use App\Http\Controllers\Responsable\ResponsableNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -418,6 +417,23 @@ Route::prefix('admin')
 
         /*
         |--------------------------------------------------------------------------
+        | NOTIFICATIONS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post('/notifications/{idNotification}/lire', [
+            \App\Http\Controllers\NotificationController::class,
+            'lire'
+        ])->name('notifications.lire');
+
+        Route::post('/notifications/lire-toutes', [
+            \App\Http\Controllers\NotificationController::class,
+            'lireToutes'
+        ])->name('notifications.lire-toutes');
+
+
+        /*
+        |--------------------------------------------------------------------------
         | UTILISATEURS
         |--------------------------------------------------------------------------
         */
@@ -625,6 +641,23 @@ Route::prefix('responsable')
 
         /*
         |--------------------------------------------------------------------------
+        | NOTIFICATIONS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post('/notifications/{idNotification}/lire', [
+            \App\Http\Controllers\NotificationController::class,
+            'lire'
+        ])->name('notifications.lire');
+
+        Route::post('/notifications/lire-toutes', [
+            \App\Http\Controllers\NotificationController::class,
+            'lireToutes'
+        ])->name('notifications.lire-toutes');
+
+
+        /*
+        |--------------------------------------------------------------------------
         | DEMANDES
         |--------------------------------------------------------------------------
         */
@@ -747,33 +780,5 @@ Route::prefix('responsable')
             ResponsableAttestationController::class,
             'marquerRemise'
         ])->name('attestations.remise');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFICATIONS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/notifications', [
-            ResponsableNotificationController::class,
-            'index'
-        ])->name('notifications');
-
-        Route::post(
-            '/notifications/{idNotification}/lire',
-            [
-                ResponsableNotificationController::class,
-                'lire'
-            ]
-        )->name('notifications.lire');
-
-        Route::post(
-            '/notifications/lire-toutes',
-            [
-                ResponsableNotificationController::class,
-                'lireToutes'
-            ]
-        )->name('notifications.lire-toutes');
 
     });

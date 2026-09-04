@@ -6,6 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <script>
+        (function () {
+            var saved = localStorage.getItem('abhoer-theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     <title>
         @yield('title', 'ABHOER') - Agence du Bassin Hydraulique de l'Oum Er-Rbia
     </title>
@@ -1400,6 +1409,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggleBtns = document.querySelectorAll('.js-theme-toggle');
+        if (!toggleBtns.length) return;
+
+        function applyIcon() {
+            var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            toggleBtns.forEach(function (btn) {
+                var icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isLight ? 'bi bi-moon-stars' : 'bi bi-sun';
+                }
+                btn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+            });
+        }
+
+        toggleBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                if (isLight) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('abhoer-theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('abhoer-theme', 'light');
+                }
+                applyIcon();
+            });
+        });
+
+        applyIcon();
+    });
 </script>
 
     @stack('scripts')

@@ -165,14 +165,55 @@
             </div>
             <div class="rt-topbar-actions">
                 <a href="{{ route('responsable.demandes.create') }}" class="btn-rt-primary d-none d-md-inline-flex"><i class="bi bi-plus-lg me-1"></i> Nouvelle demande physique</a>
-                <button type="button" class="rt-notif-btn"><i class="bi bi-bell-fill"></i><span class="rt-notif-dot"></span></button>
-                <div class="rt-topbar-user">
-                    <div class="rt-topbar-user-icon"><i class="bi bi-person-fill"></i></div>
-                    <div class="d-none d-lg-block">
-                        <span class="rt-topbar-user-name">ABHOER</span>
-                        <span class="rt-topbar-user-role">Responsable</span>
+                <div class="dropdown">
+                    <button type="button" class="rt-notif-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill"></i>
+                        @if($topbarNotificationsNonLues > 0)
+                            <span class="rt-notif-dot"></span>
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end p-2" style="width:320px; border-radius:14px; border:1px solid var(--rt-border); box-shadow:0 10px 30px rgba(14,80,75,.12);">
+                        <div class="d-flex justify-content-between align-items-center px-2 py-1">
+                            <span class="fw-bold" style="font-size:13px;color:var(--rt-text);">Notifications</span>
+                            @if($topbarNotificationsNonLues > 0)
+                                <form method="POST" action="{{ route('responsable.notifications.lire-toutes') }}" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link p-0" style="font-size:11px; color:var(--rt-teal-dark); text-decoration:none;">Tout marquer lu</button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        @forelse($topbarNotifications as $notif)
+                            <form method="POST" action="{{ route('responsable.notifications.lire', $notif->idNotification) }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item white-space-normal py-2" style="{{ $notif->lu ? '' : 'background:var(--rt-teal-pale);' }} border-radius:10px; white-space:normal;">
+                                    <div class="fw-bold" style="font-size:12.5px;color:var(--rt-text);">{{ $notif->titre }}</div>
+                                    <div style="font-size:11.5px;color:var(--rt-muted);">{{ \Illuminate\Support\Str::limit($notif->message, 80) }}</div>
+                                    <div style="font-size:10px;color:var(--rt-muted);margin-top:2px;">{{ $notif->created_at->diffForHumans() }}</div>
+                                </button>
+                            </form>
+                        @empty
+                            <div class="text-center py-3" style="color:var(--rt-muted); font-size:12.5px;">Aucune notification pour le moment.</div>
+                        @endforelse
                     </div>
-                    <i class="bi bi-chevron-down rt-topbar-chevron d-none d-lg-inline"></i>
+                </div>
+                <div class="dropdown">
+                    <button type="button" class="rt-topbar-user border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="rt-topbar-user-icon"><i class="bi bi-person-fill"></i></div>
+                        <div class="d-none d-lg-block text-start">
+                            <span class="rt-topbar-user-name">ABHOER</span>
+                            <span class="rt-topbar-user-role">Responsable</span>
+                        </div>
+                        <i class="bi bi-chevron-down rt-topbar-chevron d-none d-lg-inline"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" style="border-radius:14px; border:1px solid var(--rt-border); box-shadow:0 10px 30px rgba(14,80,75,.12);">
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </header>

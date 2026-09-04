@@ -311,48 +311,31 @@
 
                     {{-- PHOTO DE PROFIL --}}
                     <div class="section-title">
-
                         <i class="bi bi-camera me-2"></i>
-
                         Photo de profil
-
                     </div>
 
-                    <div class="row g-4 align-items-center mb-2">
-
-                        <div class="col-auto">
-                            @if ($candidat->photo)
-                                <img
-                                    src="{{ asset('storage/' . $candidat->photo) }}"
-                                    alt="Photo de profil"
-                                    style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb;"
-                                >
-                            @else
-                                <div style="width:72px;height:72px;border-radius:50%;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:#9aa5b1;font-size:26px;border:2px solid #e5e7eb;">
-                                    <i class="bi bi-person-fill"></i>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="col">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <img
+                            id="photo-preview"
+                            src="{{ $candidat->photo ? asset('storage/' . $candidat->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(($candidat->prenom ?? '') . ' ' . ($candidat->nom ?? '')) }}"
+                            alt="Photo de profil"
+                            style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,217,208,0.3);"
+                        >
+                        <div>
                             <input
                                 type="file"
+                                id="photo"
                                 name="photo"
-                                accept=".jpg,.jpeg,.png,.webp"
-                                class="form-control @error('photo') is-invalid @enderror"
+                                accept="image/png, image/jpeg, image/webp"
+                                class="form-control"
+                                onchange="document.getElementById('photo-preview').src = URL.createObjectURL(this.files[0])"
                             >
-
-                            <div class="form-text mt-1">
-                                JPG, PNG ou WEBP — 2 Mo maximum.
-                            </div>
-
+                            <small class="text-secondary">JPG, PNG ou WEBP — 2 Mo maximum.</small>
                             @error('photo')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-
                     </div>
 
                     {{-- INFORMATIONS PERSONNELLES --}}

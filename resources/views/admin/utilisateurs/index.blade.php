@@ -839,6 +839,33 @@
                                         </form>
 
 
+                                        {{-- =========================
+                                             SUPPRIMER
+                                        ========================== --}}
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route('admin.utilisateurs.destroy', $utilisateur->idUtilisateur) }}"
+                                            onsubmit="return confirm('Supprimer définitivement {{ $utilisateur->prenom }} {{ $utilisateur->nom }} ? Cette action est irréversible.');"
+                                        >
+
+                                            @csrf
+
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger"
+                                                style="background:#7f1d1d;"
+                                            >
+
+                                                Supprimer
+
+                                            </button>
+
+                                        </form>
+
+
                                     </div>
 
 

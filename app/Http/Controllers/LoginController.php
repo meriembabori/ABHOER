@@ -44,12 +44,18 @@ class LoginController extends Controller
         );
 
         /**
-         * Rechercher l'utilisateur par login.
+         * Rechercher l'utilisateur par login OU par email,
+         * pour permettre la connexion avec les deux.
          */
         $utilisateur = Utilisateur::where(
             'login',
             $validated['login']
-        )->first();
+        )
+        ->orWhere(
+            'email',
+            $validated['login']
+        )
+        ->first();
 
         /**
          * Vérifier que l'utilisateur existe.

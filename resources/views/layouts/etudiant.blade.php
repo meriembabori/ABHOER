@@ -120,7 +120,13 @@
         </div>
 
         <div class="et-sidebar-profile">
-            <div class="et-profile-icon"><i class="bi bi-person-fill"></i></div>
+            <div class="et-profile-icon">
+                @if($sidebarPhoto ?? false)
+                    <img src="{{ asset('storage/' . $sidebarPhoto) }}" alt="Photo de profil" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+                @else
+                    <i class="bi bi-person-fill"></i>
+                @endif
+            </div>
             <div>
                 <div class="et-profile-name">@auth{{ auth()->user()->prenom ?? auth()->user()->nom ?? 'Étudiant' }}@else Étudiant @endauth</div>
                 <span class="et-profile-role">● Étudiant</span>
@@ -167,7 +173,12 @@
             </div>
             <div class="et-topbar-actions">
                 <a href="{{ route('etudiant.demandes.create') }}" class="btn-et-primary"><i class="bi bi-plus-lg me-1"></i> Nouvelle demande</a>
-                <a href="{{ route('etudiant.notifications') }}" class="et-notif-btn"><i class="bi bi-bell-fill"></i><span class="et-notif-dot"></span></a>
+                <a href="{{ route('etudiant.notifications') }}" class="et-notif-btn">
+                    <i class="bi bi-bell-fill"></i>
+                    @if($topbarNotificationsNonLues > 0)
+                        <span class="et-notif-dot"></span>
+                    @endif
+                </a>
             </div>
         </header>
 

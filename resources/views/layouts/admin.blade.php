@@ -4,342 +4,232 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Administration - ABHOER')</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/aqua-theme.css') }}">
 
     <style>
         :root {
-            --admin-primary: #01111D;
-            --admin-blue: #008FD5;
-            --admin-blue-dark: #005B91;
-            --admin-blue-light: rgba(0,143,213,0.14);
-            --admin-bg: #01111D;
-            --admin-white: #0A1B2A;
-            --admin-text: #F5FAFC;
-            --admin-muted: #9FB2BE;
-            --admin-border: rgba(255,255,255,0.10);
-            --admin-success: #8BD63C;
-            --admin-warning: #F5A623;
-            --admin-danger: #FF5C7A;
+            --ad-teal: #0E9C8F; --ad-teal-dark: #0B7F75; --ad-teal-pale: #E4F5F2;
+            --ad-green: #8BC34A; --ad-red: #E5484D;
+            --ad-bg: #F4F9F8; --ad-text: #143A38; --ad-muted: #6B8582; --ad-border: #E1EEEC;
             --sidebar-width: 260px;
         }
-
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; min-height: 100%; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: var(--admin-bg);
-            color: var(--admin-text);
-            -webkit-font-smoothing: antialiased;
-        }
+        body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--ad-bg); color: var(--ad-text); }
         a { text-decoration: none; }
 
-        .admin-layout { min-height: 100vh; display: flex; }
+        .ad-layout { min-height: 100vh; display: flex; }
 
-        .admin-sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            top: 0; left: 0;
-            background: linear-gradient(180deg, #041220 0%, #010a13 100%);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            border-right: 1px solid var(--admin-border);
-            overflow-y: auto;
+        .ad-sidebar {
+            width: var(--sidebar-width); min-width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0;
+            background: linear-gradient(180deg, #ffffff 0%, #EAF6F4 100%);
+            border-right: 1px solid var(--ad-border);
+            display: flex; flex-direction: column; z-index: 1000; overflow: hidden;
         }
+        .ad-sidebar-brand { height: 84px; display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--ad-border); }
+        .ad-sidebar-logo { width: 44px; height: 44px; object-fit: contain; margin-right: 11px; }
+        .ad-sidebar-brand-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--ad-text); }
+        .ad-sidebar-brand-subtitle { display: block; font-size: 10.5px; color: var(--ad-muted); margin-top: 2px; }
 
-        .admin-sidebar-brand {
-            height: 90px; display: flex; align-items: center; padding: 18px 21px;
-            border-bottom: 1px solid var(--admin-border);
-        }
-        .admin-sidebar-logo { width: 48px; height: 48px; object-fit: contain; background: #fff; border-radius: 12px; padding: 4px; margin-right: 12px; box-shadow: 0 5px 15px rgba(0,0,0,.3); }
-        .admin-sidebar-brand-title { margin: 0; font-size: 19px; font-weight: 800; color: #fff; letter-spacing: .4px; line-height: 1.2; }
-        .admin-sidebar-brand-subtitle { display: block; margin-top: 4px; font-size: 10px; color: rgba(255,255,255,.55); font-weight: 500; }
+        .ad-sidebar-profile { margin: 16px 16px 10px; padding: 12px; background: #fff; border: 1px solid var(--ad-border); border-radius: 14px; display: flex; align-items: center; gap: 11px; box-shadow: 0 4px 14px rgba(14,156,143,.08); }
+        .ad-profile-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--ad-teal-pale); color: var(--ad-teal); display: flex; align-items: center; justify-content: center; font-size: 18px; position: relative; flex-shrink: 0; }
+        .ad-profile-icon::after { content: ''; position: absolute; bottom: 0; right: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--ad-green); border: 2px solid #fff; }
+        .ad-profile-name { font-size: 13.5px; font-weight: 700; color: var(--ad-text); }
+        .ad-profile-role { display: block; font-size: 11px; color: var(--ad-teal); margin-top: 1px; }
 
-        .admin-sidebar-profile {
-            margin: 18px 15px 14px; padding: 13px; background: rgba(0,217,208,.06);
-            border: 1px solid var(--admin-border); border-radius: 13px; display: flex; align-items: center; gap: 11px;
-        }
-        .admin-profile-icon {
-            width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; background: rgba(0,217,208,.18);
-            color: var(--aqua-cyan); display: flex; align-items: center; justify-content: center; font-size: 18px; position: relative;
-        }
-        .admin-profile-icon::after {
-            content: ''; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%;
-            background: var(--aqua-green-env); border: 2px solid #041220;
-        }
-        .admin-profile-name { display: block; font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .admin-profile-role { display: block; margin-top: 3px; font-size: 10px; color: rgba(255,255,255,.50); }
+        .ad-sidebar-menu { flex: 1; padding: 8px 12px; overflow-y: auto; }
+        .ad-menu-title { padding: 12px 11px 6px; font-size: 10px; font-weight: 800; color: #9BB3B0; text-transform: uppercase; letter-spacing: .8px; }
+        .ad-menu-link { position: relative; display: flex; align-items: center; gap: 11px; width: 100%; min-height: 42px; padding: 9px 13px; border-radius: 10px; color: #4B6764; font-size: 13.5px; font-weight: 500; margin-bottom: 3px; }
+        .ad-menu-link i { width: 18px; text-align: center; font-size: 15px; }
+        .ad-menu-link:hover { background: var(--ad-teal-pale); color: var(--ad-teal-dark); }
+        .ad-menu-link.active { background: var(--ad-teal-pale); color: var(--ad-teal-dark); font-weight: 700; }
 
-        .admin-sidebar-menu { flex: 1; padding: 9px 12px; overflow-y: auto; }
-        .admin-menu-title { padding: 10px 11px; margin-bottom: 6px; font-size: 10px; font-weight: 800; color: rgba(255,255,255,.38); text-transform: uppercase; letter-spacing: 1px; }
-        .admin-menu-item { margin-bottom: 4px; }
-        .admin-menu-link {
-            position: relative; display: flex; align-items: center; width: 100%; min-height: 45px; padding: 10px 13px;
-            border-radius: 10px; color: rgba(255,255,255,.65); font-size: 13px; font-weight: 500;
-            transition: background .2s ease, color .2s ease, transform .2s ease;
-        }
-        .admin-menu-link i { width: 23px; margin-right: 11px; font-size: 16px; text-align: center; flex-shrink: 0; }
-        .admin-menu-link:hover { color: #fff; background: rgba(255,255,255,.06); transform: translateX(2px); }
-        .admin-menu-link.active {
-            color: #012027; background: linear-gradient(90deg, #11C9C0, #1AD6C5); font-weight: 700;
-            box-shadow: 0 7px 18px rgba(0,220,210,.25);
-        }
-        .admin-menu-link.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 5px 5px 0; background: #012027; }
-        .admin-menu-link.active i { color: #012027; }
+        .ad-sidebar-deco { position: relative; margin-top: auto; height: 130px; overflow: hidden; pointer-events: none; }
+        .ad-sidebar-deco svg { position: absolute; bottom: 0; left: 0; width: 100%; }
 
-        .admin-sidebar-footer { padding: 13px; border-top: 1px solid var(--admin-border); }
-        .admin-logout-link {
-            width: 100%; border: none; background: transparent; display: flex; align-items: center;
-            padding: 11px 13px; border-radius: 10px; color: #ff8fa3; font-size: 13px; font-weight: 600; transition: .2s ease;
-        }
-        .admin-logout-link:hover { background: rgba(255,92,122,.14); color: #ffc2cf; }
-        .admin-logout-link i { width: 23px; margin-right: 10px; font-size: 16px; }
+        .ad-sidebar-footer { padding: 13px 16px; border-top: 1px solid var(--ad-border); position: relative; z-index: 2; }
+        .ad-logout-link { width: 100%; border: none; background: transparent; display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 10px; color: var(--ad-red); font-size: 13.5px; font-weight: 600; }
+        .ad-logout-link:hover { background: #FDEDED; }
 
-        .admin-main { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); min-height: 100vh; display: flex; flex-direction: column; }
+        .ad-main { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); min-height: 100vh; display: flex; flex-direction: column; }
 
-        .admin-topbar {
-            min-height: 76px; background: rgba(4, 15, 24, 0.82); backdrop-filter: blur(14px); border-bottom: 1px solid var(--admin-border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
-            position: sticky; top: 0; z-index: 900;
-        }
-        .admin-topbar-left { display: flex; align-items: center; gap: 12px; }
-        .admin-topbar-icon { width: 41px; height: 41px; border-radius: 11px; background: rgba(0,217,208,.14); color: var(--aqua-cyan); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .admin-topbar-title { margin: 0; font-size: 16px; font-weight: 750; color: var(--admin-text); }
-        .admin-topbar-subtitle { display: block; margin-top: 3px; font-size: 11px; color: var(--admin-muted); }
-        .admin-mobile-button { display: none; border: none; background: transparent; color: #fff; font-size: 22px; }
-        .admin-topbar-actions { display: flex; align-items: center; gap: 14px; }
-        .admin-notif-btn {
-            position: relative; width: 41px; height: 41px; border-radius: 11px; border: 1px solid var(--admin-border);
-            background: rgba(255,255,255,.04); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px;
-        }
-        .admin-notif-badge {
-            position: absolute; top: -5px; right: -5px; min-width: 17px; height: 17px; border-radius: 50%;
-            background: var(--aqua-blue-water); color: white; font-size: 10px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; border: 2px solid #01111D; padding: 0 3px;
-        }
+        .ad-topbar { min-height: 78px; background: #fff; border-bottom: 1px solid var(--ad-border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: sticky; top: 0; z-index: 900; }
+        .ad-topbar-left { display: flex; align-items: center; gap: 13px; }
+        .ad-topbar-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--ad-teal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+        .ad-topbar-title { margin: 0; font-size: 17px; font-weight: 800; color: var(--ad-text); }
+        .ad-topbar-subtitle { display: block; font-size: 11.5px; color: var(--ad-muted); margin-top: 2px; }
+        .ad-mobile-button { display: none; border: none; background: transparent; font-size: 22px; color: var(--ad-text); }
 
-        .admin-page { width: 100%; max-width: 1500px; margin: 0 auto; padding: 31px; }
-        .admin-page-header { margin-bottom: 27px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; }
-        .admin-page-title { margin: 0 0 6px; font-size: 27px; font-weight: 800; color: var(--admin-text); letter-spacing: -.3px; }
-        .admin-page-description { margin: 0; font-size: 13px; color: var(--admin-muted); }
+        .ad-topbar-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-ad-primary { background: linear-gradient(135deg, var(--ad-teal), var(--ad-teal-dark)); color: #fff; border: none; border-radius: 999px; padding: 10px 20px; font-size: 13.5px; font-weight: 700; box-shadow: 0 6px 16px rgba(14,156,143,.25); }
+        .btn-ad-primary:hover { color: #fff; filter: brightness(1.05); }
+        .ad-notif-btn { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--ad-border); background: #fff; color: var(--ad-text); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .ad-notif-dot { position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--ad-red); border: 2px solid #fff; }
+        .ad-topbar-user { display: flex; align-items: center; gap: 10px; }
+        .ad-topbar-user-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--ad-teal-pale); color: var(--ad-teal); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+        .ad-topbar-user-name { font-size: 12.5px; font-weight: 700; color: var(--ad-text); }
+        .ad-topbar-user-role { display: block; font-size: 10.5px; color: var(--ad-muted); margin-top: 2px; }
+        .ad-topbar-chevron { color: var(--ad-muted); font-size: 12px; }
 
-        .card { background: rgba(7, 22, 33, 0.72); backdrop-filter: blur(16px); border: 1px solid var(--admin-border); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,.25); color: var(--admin-text); }
-        .btn { border-radius: 9px; font-weight: 600; transition: all .2s ease; }
-        .btn-primary { background: linear-gradient(135deg, #11C9C0, #1AD6C5); border-color: transparent; color: #012027; box-shadow: 0 5px 16px rgba(0,220,210,.25); }
-        .btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); color: #012027; }
-        .btn-outline-primary { color: var(--aqua-cyan); border-color: rgba(0,217,208,.4); }
-        .btn-outline-primary:hover { background: rgba(0,217,208,.14); border-color: var(--aqua-cyan); color: var(--aqua-cyan); }
+        .ad-page { width: 100%; max-width: 1560px; margin: 0 auto; padding: 30px; }
 
-        .table { color: var(--admin-text); margin-bottom: 0; }
-        .table thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .55px; color: var(--admin-muted); font-weight: 750; padding: 15px 16px; background: rgba(255,255,255,.03); border-bottom: 1px solid var(--admin-border); }
-        .table tbody td { padding: 15px 16px; border-color: var(--admin-border); font-size: 13px; vertical-align: middle; }
-        .table-hover tbody tr:hover { background: rgba(255,255,255,.03); }
+        .card { background: #fff; border: 1px solid var(--ad-border); border-radius: 16px; box-shadow: 0 4px 18px rgba(14,80,75,.05); }
+        .card-header { background: transparent; border-bottom: 1px solid var(--ad-border); }
+        .table { color: var(--ad-text); margin-bottom: 0; }
+        .table thead th { font-size: 11px; text-transform: uppercase; color: var(--ad-muted); font-weight: 750; padding: 14px 16px; background: #F7FBFA; border-bottom: 1px solid var(--ad-border); }
+        .table tbody td { padding: 14px 16px; border-color: var(--ad-border); font-size: 13px; vertical-align: middle; }
+        .table-hover tbody tr:hover { background: #F7FBFA; }
+        .badge { border-radius: 7px; padding: 6px 9px; font-size: 10px; font-weight: 700; }
+        .ad-alert { border: none; border-radius: 12px; padding: 13px 16px; font-size: 13px; background: var(--ad-teal-pale); color: var(--ad-teal-dark); }
+        .form-control, .form-select { border-radius: 10px; border: 1px solid var(--ad-border); padding: 10px 13px; font-size: 13px; box-shadow: none !important; }
+        .form-control:focus, .form-select:focus { border-color: var(--ad-teal); box-shadow: 0 0 0 3px rgba(14,156,143,.12) !important; }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--ad-text); }
+        .btn-outline-primary { color: var(--ad-teal-dark); border-color: var(--ad-teal); border-radius: 999px; }
+        .btn-outline-primary:hover { background: var(--ad-teal); border-color: var(--ad-teal); color: #fff; }
+        .btn-primary { background: linear-gradient(135deg, var(--ad-teal), var(--ad-teal-dark)); border: none; border-radius: 999px; }
 
-        .badge { border-radius: 7px; padding: 6px 9px; font-size: 10px; font-weight: 700; letter-spacing: .2px; }
-        .admin-alert { border: none; border-radius: 11px; padding: 13px 16px; font-size: 13px; background: rgba(0,217,208,.10); color: var(--aqua-cyan); border: 1px solid rgba(0,217,208,.25); }
-        .admin-alert.alert-danger { background: rgba(255,92,122,.10); color: #ff8fa3; border-color: rgba(255,92,122,.3); }
+        .ad-footer { margin-top: auto; text-align: center; color: var(--ad-muted); font-size: 11px; padding: 18px; }
 
-        .form-control, .form-select { border-radius: 9px; border: 1px solid var(--admin-border); padding: 10px 13px; font-size: 13px; box-shadow: none !important; background: rgba(255,255,255,.03); color: var(--admin-text); }
-        .form-control:focus, .form-select:focus { border-color: var(--aqua-cyan); box-shadow: 0 0 0 3px rgba(0,217,208,.14) !important; background: rgba(255,255,255,.05); color: var(--admin-text); }
-        .form-control::placeholder { color: var(--admin-muted); }
-        .form-label { font-size: 13px; font-weight: 600; color: var(--admin-text); }
-
-        .admin-footer { margin-top: auto; text-align: center; color: var(--admin-muted); font-size: 11px; padding: 20px 15px 25px; }
-
-        /* ---- Stat cards (KPI row) ---- */
-        .admin-stat-card { background: rgba(7, 22, 33, 0.72); backdrop-filter: blur(16px); border: 1px solid var(--admin-border); border-radius: 16px; min-height: 150px; padding: 24px; transition: transform .2s ease, border-color .2s ease; }
-        .admin-stat-card:hover { transform: translateY(-3px); border-color: rgba(0,217,208,.3); }
-        .admin-stat-content { display: flex; justify-content: space-between; align-items: flex-start; }
-        .admin-stat-label { font-size: 12.5px; color: var(--admin-muted); margin-bottom: 8px; }
-        .admin-stat-number { font-size: 27px; font-weight: 800; color: var(--admin-text); }
-        .admin-stat-description { font-size: 11px; color: var(--admin-muted); margin-top: 6px; }
-        .admin-stat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
-        .icon-primary { background: rgba(0,217,208,.15); color: var(--aqua-cyan); }
-        .icon-warning { background: rgba(245,166,35,.15); color: var(--admin-warning); }
-        .icon-success { background: rgba(139,214,60,.15); color: var(--admin-success); }
-        .icon-danger { background: rgba(255,92,122,.15); color: var(--admin-danger); }
-        .icon-purple { background: rgba(139,92,246,.15); color: var(--aqua-violet); }
-        .icon-blue { background: rgba(0,143,213,.15); color: var(--aqua-blue-water); }
-
-        /* ---- Info cards (Utilisateurs / Candidats / Services) ---- */
-        .admin-info-card { background: rgba(7, 22, 33, 0.72); backdrop-filter: blur(16px); border: 1px solid var(--admin-border); border-radius: 16px; padding: 24px; height: 100%; transition: transform .2s ease, border-color .2s ease; }
-        .admin-info-card:hover { transform: translateY(-3px); border-color: rgba(0,217,208,.3); }
-        .admin-info-header { display: flex; align-items: center; gap: 13px; margin-bottom: 18px; }
-        .admin-info-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: rgba(0,217,208,.14); color: var(--aqua-cyan); display: flex; align-items: center; justify-content: center; font-size: 19px; }
-        .admin-info-title { margin: 0; font-size: 14.5px; font-weight: 700; color: var(--admin-text); }
-        .admin-info-text { margin: 3px 0 0; font-size: 12px; color: var(--admin-muted); }
-        .admin-info-value { font-size: 30px; font-weight: 800; color: var(--admin-text); margin-bottom: 14px; }
-        .admin-info-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--admin-border); font-size: 12.5px; color: var(--admin-muted); }
-        .admin-link { color: var(--aqua-cyan); font-weight: 700; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; transition: gap .2s; }
-        .admin-link:hover { color: var(--aqua-cyan-bright); gap: 9px; }
-
-        /* ---- Quick actions section ---- */
-        .admin-section-card { background: rgba(7, 22, 33, 0.72); backdrop-filter: blur(16px); border: 1px solid var(--admin-border); border-radius: 16px; padding: 26px; }
-        .admin-section-header { margin-bottom: 8px; }
-        .admin-section-title { margin: 0 0 4px; font-size: 17px; font-weight: 800; color: var(--admin-text); }
-        .admin-section-description { margin: 0; font-size: 12.5px; color: var(--admin-muted); }
-
-        .admin-action {
-            display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 13px;
-            background: rgba(255,255,255,.03); border: 1px solid var(--admin-border); color: var(--admin-text);
-            transition: background .2s ease, border-color .2s ease, transform .2s ease;
-        }
-        .admin-action:hover { background: rgba(0,217,208,.08); border-color: rgba(0,217,208,.3); transform: translateY(-2px); color: var(--admin-text); }
-        .admin-action-icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; background: rgba(0,217,208,.14); color: var(--aqua-cyan); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .admin-action-title { font-size: 13.5px; font-weight: 700; color: var(--admin-text); }
-        .admin-action-text { font-size: 11.5px; color: var(--admin-muted); margin-top: 2px; }
-        .admin-action i.bi-chevron-right { color: var(--admin-muted); }
-
-        @media (max-width: 992px) {
-            :root { --sidebar-width: 230px; }
-            .admin-page { padding: 25px 22px; }
-            .admin-topbar { padding: 0 22px; }
-        }
+        @media (max-width: 992px) { :root { --sidebar-width: 230px; } .ad-page { padding: 22px; } .ad-topbar { padding: 0 20px; } }
         @media (max-width: 768px) {
-            .admin-sidebar { transform: translateX(-100%); transition: transform .25s ease; }
-            .admin-sidebar.show { transform: translateX(0); }
-            .admin-main { margin-left: 0; width: 100%; }
-            .admin-mobile-button { display: block; }
-            .admin-topbar { padding: 0 15px; }
-            .admin-page { padding: 21px 15px; }
-            .admin-page-title { font-size: 23px; }
+            .ad-sidebar { transform: translateX(-100%); transition: transform .25s ease; }
+            .ad-sidebar.show { transform: translateX(0); }
+            .ad-main { margin-left: 0; width: 100%; }
+            .ad-mobile-button { display: block; }
+            .ad-page { padding: 16px; }
         }
 
         @stack('styles')
     </style>
 </head>
-
 <body>
 
-<div class="admin-layout">
+<div class="ad-layout">
 
-    <aside class="admin-sidebar" id="adminSidebar">
-
-        <div class="admin-sidebar-brand">
-            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="admin-sidebar-logo">
+    <aside class="ad-sidebar" id="adSidebar">
+        <div class="ad-sidebar-brand">
+            <img src="{{ asset('images/logo-abhoer.png') }}" alt="Logo ABHOER" class="ad-sidebar-logo">
             <div>
-                <h1 class="admin-sidebar-brand-title">ABHOER</h1>
-                <span class="admin-sidebar-brand-subtitle">Espace Administrateur</span>
+                <div class="ad-sidebar-brand-title">ABHOER</div>
+                <span class="ad-sidebar-brand-subtitle">Gestion des stages</span>
             </div>
         </div>
 
-        <div class="admin-sidebar-profile">
-            <div class="admin-profile-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <div class="ad-sidebar-profile">
+            <div class="ad-profile-icon"><i class="bi bi-person-fill"></i></div>
             <div>
-                <span class="admin-profile-name">{{ auth()->user()->prenom ?? auth()->user()->nom ?? 'Administrateur' }}</span>
-                <span class="admin-profile-role">Administrateur</span>
+                <div class="ad-profile-name">ABHOER</div>
+                <span class="ad-profile-role">● Administrateur</span>
             </div>
         </div>
 
-        <nav class="admin-sidebar-menu">
-            <div class="admin-menu-title">Administration</div>
+        <nav class="ad-sidebar-menu">
+            <div class="ad-menu-title">Administration</div>
+            <a href="{{ route('admin.dashboard') }}" class="ad-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="bi bi-grid-1x2-fill"></i> Tableau de bord</a>
+            <a href="{{ route('admin.utilisateurs.index') }}" class="ad-menu-link {{ request()->routeIs('admin.utilisateurs.*') ? 'active' : '' }}"><i class="bi bi-people-fill"></i> Utilisateurs</a>
+            <a href="{{ route('admin.departements.index') }}" class="ad-menu-link {{ request()->routeIs('admin.departements.*') ? 'active' : '' }}"><i class="bi bi-diagram-3-fill"></i> Départements</a>
+            <a href="{{ route('admin.services.index') }}" class="ad-menu-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}"><i class="bi bi-building-fill"></i> Services</a>
+            <a href="{{ route('admin.demandes.index') }}" class="ad-menu-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-text-fill"></i> Demandes de stage</a>
 
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.dashboard') }}" class="admin-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-grid-1x2-fill"></i><span>Tableau de bord</span>
-                </a>
-            </div>
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.utilisateurs.index') }}" class="admin-menu-link {{ request()->routeIs('admin.utilisateurs.*') ? 'active' : '' }}">
-                    <i class="bi bi-people-fill"></i><span>Utilisateurs</span>
-                </a>
-            </div>
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.departements.index') }}" class="admin-menu-link {{ request()->routeIs('admin.departements.*') ? 'active' : '' }}">
-                    <i class="bi bi-diagram-3-fill"></i><span>Départements</span>
-                </a>
-            </div>
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.services.index') }}" class="admin-menu-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
-                    <i class="bi bi-bounding-box"></i><span>Services</span>
-                </a>
-            </div>
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.demandes.index') }}" class="admin-menu-link {{ request()->routeIs('admin.demandes.*') ? 'active' : '' }}">
-                    <i class="bi bi-file-earmark-text-fill"></i><span>Demandes de stage</span>
-                </a>
-            </div>
-
-            <div class="admin-menu-title mt-3">Suivi</div>
-            <div class="admin-menu-item">
-                <a href="{{ route('admin.stages.index') }}" class="admin-menu-link {{ request()->routeIs('admin.stages.*') ? 'active' : '' }}">
-                    <i class="bi bi-mortarboard-fill"></i><span>Stages</span>
-                </a>
-            </div>
+            <div class="ad-menu-title">Suivi</div>
+            <a href="{{ route('admin.stages.index') }}" class="ad-menu-link {{ request()->routeIs('admin.stages.*') ? 'active' : '' }}"><i class="bi bi-mortarboard-fill"></i> Stages</a>
         </nav>
 
-        <div class="admin-sidebar-footer">
-            <form method="POST" action="{{ route('logout') }}" class="m-0">
-                @csrf
-                <button type="submit" class="admin-logout-link"><i class="bi bi-box-arrow-right"></i><span>Déconnexion</span></button>
-            </form>
+        <div class="ad-sidebar-deco">
+            <svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 90 C 60 60, 200 120, 260 70 L 260 130 L 0 130 Z" fill="#E4F5F2"/>
+                <path d="M0 110 C 80 85, 180 130, 260 95 L 260 130 L 0 130 Z" fill="#D3EEE9"/>
+            </svg>
         </div>
 
+        <div class="ad-sidebar-footer">
+            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="ad-logout-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</button>
+            </form>
+        </div>
     </aside>
 
-    <div class="admin-main">
+    <div class="ad-main">
 
-        <header class="admin-topbar">
-            <div class="admin-topbar-left">
-                <button type="button" class="admin-mobile-button" id="adminMobileButton" aria-label="Ouvrir le menu"><i class="bi bi-list"></i></button>
-                <div class="admin-topbar-icon"><i class="bi bi-shield-check"></i></div>
+        <header class="ad-topbar">
+            <div class="ad-topbar-left">
+                <button type="button" class="ad-mobile-button" id="adMobileButton"><i class="bi bi-list"></i></button>
+                <div class="ad-topbar-icon"><i class="bi bi-mortarboard-fill"></i></div>
                 <div>
-                    <h2 class="admin-topbar-title">Espace Administrateur</h2>
-                    <span class="admin-topbar-subtitle">Plateforme de gestion des stages ABHOER</span>
+                    <h2 class="ad-topbar-title">Espace Administrateur</h2>
+                    <span class="ad-topbar-subtitle">Plateforme de gestion des stages ABHOER</span>
                 </div>
             </div>
-
-            <div class="admin-topbar-actions">
-                <a href="{{ route('admin.utilisateurs.create') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-person-plus me-1"></i> Ajouter un utilisateur
-                </a>
+            <div class="ad-topbar-actions">
+                <div class="dropdown">
+                    <button type="button" class="ad-notif-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill"></i>
+                        @if($topbarNotificationsNonLues > 0)
+                            <span class="ad-notif-dot"></span>
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end p-2" style="width:320px; border-radius:14px; border:1px solid var(--ad-border); box-shadow:0 10px 30px rgba(14,80,75,.12);">
+                        <div class="d-flex justify-content-between align-items-center px-2 py-1">
+                            <span class="fw-bold" style="font-size:13px;color:var(--ad-text);">Notifications</span>
+                            @if($topbarNotificationsNonLues > 0)
+                                <form method="POST" action="{{ route('admin.notifications.lire-toutes') }}" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link p-0" style="font-size:11px; color:var(--ad-teal-dark); text-decoration:none;">Tout marquer lu</button>
+                                </form>
+                            @endif
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        @forelse($topbarNotifications as $notif)
+                            <form method="POST" action="{{ route('admin.notifications.lire', $notif->idNotification) }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item white-space-normal py-2" style="{{ $notif->lu ? '' : 'background:var(--ad-teal-pale);' }} border-radius:10px; white-space:normal;">
+                                    <div class="fw-bold" style="font-size:12.5px;color:var(--ad-text);">{{ $notif->titre }}</div>
+                                    <div style="font-size:11.5px;color:var(--ad-muted);">{{ \Illuminate\Support\Str::limit($notif->message, 80) }}</div>
+                                    <div style="font-size:10px;color:var(--ad-muted);margin-top:2px;">{{ $notif->created_at->diffForHumans() }}</div>
+                                </button>
+                            </form>
+                        @empty
+                            <div class="text-center py-3" style="color:var(--ad-muted); font-size:12.5px;">Aucune notification pour le moment.</div>
+                        @endforelse
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button type="button" class="ad-topbar-user border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="ad-topbar-user-icon"><i class="bi bi-person-fill"></i></div>
+                        <div class="d-none d-lg-block text-start">
+                            <span class="ad-topbar-user-name">ABHOER</span>
+                            <span class="ad-topbar-user-role">Administrateur</span>
+                        </div>
+                        <i class="bi bi-chevron-down ad-topbar-chevron d-none d-lg-inline"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" style="border-radius:14px; border:1px solid var(--ad-border); box-shadow:0 10px 30px rgba(14,80,75,.12);">
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </header>
 
-        <main class="admin-page">
-
-            @hasSection('page-header')
-                @yield('page-header')
-            @else
-                <div class="admin-page-header">
-                    <div>
-                        <h1 class="admin-page-title">@yield('page-title', 'Espace Administrateur')</h1>
-                        <p class="admin-page-description">@yield('page-description', 'Plateforme de gestion des stages ABHOER.')</p>
-                    </div>
-                </div>
+        <main class="ad-page">
+            @if(session('success'))
+                <div class="alert ad-alert mb-4"><i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert mb-4" style="background:#FDEDED;color:#B42318;border-radius:12px;border:none;"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}</div>
             @endif
 
-            @if (session('success'))
-                <div class="alert alert-success admin-alert mb-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger admin-alert mb-4" role="alert">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br>
-                    @endforeach
-                </div>
-            @endif
-
-            <div class="admin-content">
-                @yield('content')
-            </div>
-
+            @yield('content')
         </main>
 
-        <footer class="admin-footer">ABHOER — Plateforme de gestion des stages</footer>
-
+        <footer class="ad-footer">ABHOER — Plateforme de gestion des stages</footer>
     </div>
 
 </div>
@@ -347,15 +237,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const button = document.getElementById('adminMobileButton');
-        const sidebar = document.getElementById('adminSidebar');
-        if (button && sidebar) {
-            button.addEventListener('click', function () { sidebar.classList.toggle('show'); });
-        }
+        const b = document.getElementById('adMobileButton'), s = document.getElementById('adSidebar');
+        if (b && s) b.addEventListener('click', () => s.classList.toggle('show'));
     });
 </script>
 
 @stack('scripts')
-
 </body>
 </html>

@@ -38,11 +38,21 @@
         font-size: 14.5px; line-height: 1.4; text-align: right; max-width: 220px; margin-left: auto;
     }
 
-    .et-profile-banner { display: flex; align-items: center; justify-content: space-between; padding: 20px 26px; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; }
-    .et-profile-banner-left { display: flex; align-items: center; gap: 16px; }
-    .et-profile-banner-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--et-teal-pale); color: var(--et-teal); display: flex; align-items: center; justify-content: center; font-size: 24px; }
-    .et-profile-banner-name { font-size: 16px; font-weight: 800; color: var(--et-text); }
-    .et-profile-banner-role { font-size: 13px; color: var(--et-muted); margin-top: 2px; }
+    .et-profile-banner {
+        position: relative; overflow: hidden;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 22px 28px; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;
+        background: linear-gradient(120deg, #ffffff 45%, #E4F5F2 100%);
+    }
+    .et-profile-banner-leaf { position: absolute; left: -18px; bottom: -18px; font-size: 110px; color: rgba(14,156,143,.10); transform: rotate(-15deg); z-index: 0; }
+    .et-profile-banner-left { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+    .et-profile-banner-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--et-teal-pale); color: var(--et-teal); display: flex; align-items: center; justify-content: center; font-size: 26px; overflow: hidden; flex-shrink: 0; border: 3px solid #fff; box-shadow: 0 4px 14px rgba(14,156,143,.18); }
+    .et-profile-banner-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .et-profile-banner-name { font-size: 17px; font-weight: 800; color: var(--et-text); }
+    .et-profile-banner-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 5px; }
+    .et-profile-banner-role { font-size: 12.5px; color: var(--et-muted); display: flex; align-items: center; gap: 5px; }
+    .et-profile-banner-badge { background: var(--et-teal-pale); color: var(--et-teal-dark); font-size: 11px; font-weight: 700; border-radius: 999px; padding: 4px 12px; display: inline-flex; align-items: center; gap: 5px; }
+    .et-profile-banner-email { font-size: 12.5px; color: var(--et-muted); display: flex; align-items: center; gap: 5px; }
 
     .et-stat-card { padding: 22px; position: relative; overflow: hidden; transition: transform .2s ease; }
     .et-stat-card:hover { transform: translateY(-3px); }
@@ -89,18 +99,29 @@
 
 @if ($candidat)
 <div class="card et-profile-banner">
+    <i class="bi bi-flower2 et-profile-banner-leaf"></i>
+
     <div class="et-profile-banner-left">
-        @if ($candidat->photo)
-            <img src="{{ asset('storage/' . $candidat->photo) }}" alt="Photo de profil" style="width:56px;height:56px;border-radius:50%;object-fit:cover;">
-        @else
-            <div class="et-profile-banner-icon"><i class="bi bi-person-fill"></i></div>
-        @endif
+        <div class="et-profile-banner-icon">
+            @if ($candidat->photo)
+                <img src="{{ asset('storage/' . $candidat->photo) }}" alt="Photo de profil">
+            @else
+                <i class="bi bi-person-fill"></i>
+            @endif
+        </div>
         <div>
             <div class="et-profile-banner-name">{{ $candidat->prenom ?? '' }} {{ $candidat->nom ?? '' }}</div>
-            <div class="et-profile-banner-role">{{ $candidat->formation ?? 'Étudiant(e)' }}</div>
+            <div class="et-profile-banner-meta">
+                <span class="et-profile-banner-role"><i class="bi bi-mortarboard-fill"></i> {{ $candidat->formation ?? 'Étudiant(e)' }}</span>
+                <span class="et-profile-banner-badge"><i class="bi bi-patch-check-fill"></i> Étudiant(e)</span>
+                @if ($candidat->email ?? false)
+                    <span class="et-profile-banner-email"><i class="bi bi-envelope-fill"></i> {{ $candidat->email }}</span>
+                @endif
+            </div>
         </div>
     </div>
-    <a href="{{ route('etudiant.profil') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-person-vcard-fill me-1"></i> Mon profil</a>
+
+    <a href="{{ route('etudiant.profil') }}" class="btn btn-outline-primary btn-sm" style="position:relative;z-index:1;"><i class="bi bi-person-vcard-fill me-1"></i> Mon profil</a>
 </div>
 @endif
 

@@ -75,6 +75,7 @@ class InscriptionController extends Controller
             'nom' => $candidat->nom,
             'prenom' => $candidat->prenom,
             'login' => $validated['login'],
+            'email' => $validated['email'],
             'motDePasse' => Hash::make($validated['motDePasse']),
             'role' => 'ETUDIANT',
             'actif' => true,

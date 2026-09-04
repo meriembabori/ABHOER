@@ -35,6 +35,7 @@ class Utilisateur extends Authenticatable
         'nom',
         'prenom',
         'login',
+        'email',
         'motDePasse',
         'role',
         'actif',

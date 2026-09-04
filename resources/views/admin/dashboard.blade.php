@@ -2,930 +2,201 @@
 
 @section('title', 'Tableau de bord administrateur')
 
-@section('page-title', 'Tableau de bord administrateur')
-
-@section('page-description')
-    Bienvenue dans votre espace d'administration de l'ABHOER.
-@endsection
-
-
 @section('content')
 
-<div class="container-fluid px-0">
+<style>
+    .ad-hero { position: relative; border-radius: 20px; overflow: hidden; margin-bottom: 24px; background: linear-gradient(120deg, #F4FAF9, #E4F5F2); min-height: 170px; padding: 28px 34px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .ad-hero-photo { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; background: url('{{ asset("images/bassin/arriere-plan-etudiant.png") }}') center/cover no-repeat; -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 22%); mask-image: linear-gradient(90deg, transparent 0%, black 22%); z-index: 0; }
+    .ad-hero-text { position: relative; z-index: 2; max-width: 560px; display: flex; align-items: center; gap: 16px; }
+    .ad-hero-icon { width: 46px; height: 46px; border-radius: 14px; background: var(--ad-teal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .ad-hero-text h1 { font-size: 24px; font-weight: 800; color: var(--ad-text); margin-bottom: 6px; }
+    .ad-hero-text p { font-size: 13.5px; color: var(--ad-muted); margin: 0; }
+    .ad-hero-quote { position: relative; z-index: 2; flex-shrink: 0; align-self: flex-start; font-family: 'Segoe Script', cursive; font-style: italic; color: var(--ad-teal-dark); font-size: 14.5px; line-height: 1.4; text-align: right; max-width: 220px; margin-left: auto; }
 
+    .ad-stat-card { padding: 22px; position: relative; overflow: hidden; transition: transform .2s ease; }
+    .ad-stat-card:hover { transform: translateY(-3px); }
+    .ad-stat-card.c-teal { background: linear-gradient(135deg, #ffffff 55%, #DCF1EE 100%); }
+    .ad-stat-card.c-amber { background: linear-gradient(135deg, #ffffff 55%, #FBEFD3 100%); }
+    .ad-stat-card.c-green { background: linear-gradient(135deg, #ffffff 55%, #E8F3D8 100%); }
+    .ad-stat-card.c-red { background: linear-gradient(135deg, #ffffff 55%, #FBE3E4 100%); }
+    .ad-stat-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+    .ad-stat-icon-circle { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 19px; color: #fff; flex-shrink: 0; }
+    .ad-stat-icon-circle.bg-teal { background: linear-gradient(135deg, var(--ad-teal), var(--ad-teal-dark)); }
+    .ad-stat-icon-circle.bg-amber { background: linear-gradient(135deg, #F3B94E, #DB9422); }
+    .ad-stat-icon-circle.bg-green { background: linear-gradient(135deg, #6FBF5A, #4E9A3B); }
+    .ad-stat-icon-circle.bg-red { background: linear-gradient(135deg, #EF5F63, #D8383D); }
+    .ad-stat-chevron-circle { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.7); display: flex; align-items: center; justify-content: center; color: var(--ad-text); font-size: 13px; }
+    .ad-stat-title { font-size: 14px; font-weight: 700; color: var(--ad-text); margin: 14px 0 2px; position: relative; z-index: 1; }
+    .ad-stat-num { font-size: 28px; font-weight: 800; color: var(--ad-text); position: relative; z-index: 1; line-height: 1; }
+    .ad-stat-label { font-size: 12px; color: var(--ad-muted); margin-top: 6px; position: relative; z-index: 1; }
 
-    {{-- =====================================================
-         STATISTIQUES PRINCIPALES
-    ====================================================== --}}
+    .ad-info-card { padding: 22px; background: linear-gradient(135deg, #ffffff 55%, #E8F3F1 100%); position: relative; overflow: hidden; }
+    .ad-info-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--ad-teal-pale); color: var(--ad-teal-dark); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .ad-info-title { font-size: 14.5px; font-weight: 750; color: var(--ad-text); margin-bottom: 2px; }
+    .ad-info-text { font-size: 12px; color: var(--ad-muted); }
+    .ad-info-value { font-size: 32px; font-weight: 800; color: var(--ad-teal-dark); margin: 18px 0 8px; position: relative; z-index: 1; }
+    .ad-info-footer { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--ad-muted); position: relative; z-index: 1; }
+    .ad-info-footer a { color: var(--ad-teal-dark); font-weight: 700; }
+    .ad-info-pill { border-radius: 999px; padding: 4px 11px; font-size: 11px; font-weight: 700; background: var(--ad-teal-pale); color: var(--ad-teal-dark); }
+    .ad-info-deco { position: absolute; right: -6px; bottom: -6px; font-size: 78px; color: rgba(14,156,143,.09); }
 
-    <div class="row g-4 mb-4">
+    .ad-section-card { padding: 24px; }
+    .ad-section-title { font-size: 16px; font-weight: 750; color: var(--ad-text); }
+    .ad-section-description { color: var(--ad-muted); font-size: 12.5px; margin: 3px 0 18px; }
+    .ad-action { display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 16px; background: var(--ad-teal-pale); border: 1px solid var(--ad-border); border-radius: 12px; text-decoration: none; color: var(--ad-text); transition: transform .2s ease; }
+    .ad-action:hover { transform: translateX(2px); color: var(--ad-text); }
+    .ad-action-icon { width: 40px; height: 40px; border-radius: 11px; background: #fff; color: var(--ad-teal-dark); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .ad-action-title { font-size: 13px; font-weight: 750; }
+    .ad-action-text { font-size: 11px; color: var(--ad-muted); }
+    .ad-action > .bi-chevron-right { color: var(--ad-muted); margin-left: auto; }
+</style>
 
-
-        {{-- TOTAL DEMANDES --}}
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="admin-stat-card">
-
-                <div class="admin-stat-content">
-
-                    <div>
-
-                        <div class="admin-stat-label">
-                            Total demandes
-                        </div>
-
-                        <div class="admin-stat-number">
-                            {{ $totalDemandes }}
-                        </div>
-
-                        <div class="admin-stat-description">
-                            Demandes enregistrées
-                        </div>
-
-                    </div>
-
-
-                    <div class="admin-stat-icon icon-primary">
-
-                        <i class="bi bi-file-earmark-text"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+<div class="ad-hero">
+    <div class="ad-hero-photo"></div>
+    <div class="ad-hero-text">
+        <div class="ad-hero-icon"><i class="bi bi-bar-chart-fill"></i></div>
+        <div>
+            <h1>Tableau de bord administrateur</h1>
+            <p>Bienvenue dans votre espace d'administration de l'ABHOER.</p>
         </div>
-
-
-        {{-- EN ATTENTE --}}
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="admin-stat-card">
-
-                <div class="admin-stat-content">
-
-                    <div>
-
-                        <div class="admin-stat-label">
-                            En attente
-                        </div>
-
-                        <div class="admin-stat-number text-warning">
-                            {{ $demandesEnAttente }}
-                        </div>
-
-                        <div class="admin-stat-description">
-                            À traiter
-                        </div>
-
-                    </div>
-
-
-                    <div class="admin-stat-icon icon-warning">
-
-                        <i class="bi bi-hourglass-split"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- ACCEPTEES --}}
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="admin-stat-card">
-
-                <div class="admin-stat-content">
-
-                    <div>
-
-                        <div class="admin-stat-label">
-                            Acceptées
-                        </div>
-
-                        <div class="admin-stat-number text-success">
-                            {{ $demandesAcceptees }}
-                        </div>
-
-                        <div class="admin-stat-description">
-                            Demandes acceptées
-                        </div>
-
-                    </div>
-
-
-                    <div class="admin-stat-icon icon-success">
-
-                        <i class="bi bi-check-circle"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- REFUSEES --}}
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="admin-stat-card">
-
-                <div class="admin-stat-content">
-
-                    <div>
-
-                        <div class="admin-stat-label">
-                            Refusées
-                        </div>
-
-                        <div class="admin-stat-number text-danger">
-                            {{ $demandesRefusees }}
-                        </div>
-
-                        <div class="admin-stat-description">
-                            Demandes refusées
-                        </div>
-
-                    </div>
-
-
-                    <div class="admin-stat-icon icon-danger">
-
-                        <i class="bi bi-x-circle"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
     </div>
-
-
-    {{-- =====================================================
-         INFORMATIONS SYSTEME
-    ====================================================== --}}
-
-    <div class="row g-4">
-
-
-        {{-- UTILISATEURS --}}
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="admin-info-card">
-
-                <div class="admin-info-header">
-
-
-                    <div class="admin-info-icon">
-
-                        <i class="bi bi-people"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h5 class="admin-info-title">
-                            Utilisateurs
-                        </h5>
-
-                        <p class="admin-info-text">
-                            Comptes enregistrés sur la plateforme
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="admin-info-value">
-
-                    {{ $totalUtilisateurs }}
-
-                </div>
-
-
-                <div class="admin-info-footer">
-
-                    <span>
-                        Utilisateur(s)
-                    </span>
-
-
-                    <a
-                        href="{{ route('admin.utilisateurs.index') }}"
-                        class="admin-link"
-                    >
-
-                        Gérer
-
-                        <i class="bi bi-arrow-right"></i>
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- CANDIDATS --}}
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="admin-info-card">
-
-                <div class="admin-info-header">
-
-
-                    <div class="admin-info-icon">
-
-                        <i class="bi bi-person-badge"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h5 class="admin-info-title">
-                            Candidats
-                        </h5>
-
-                        <p class="admin-info-text">
-                            Étudiants inscrits dans la plateforme
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="admin-info-value">
-
-                    {{ $totalCandidats }}
-
-                </div>
-
-
-                <div class="admin-info-footer">
-
-                    <span>
-                        Candidat(s)
-                    </span>
-
-
-                    <span class="text-success">
-
-                        <i class="bi bi-check-circle me-1"></i>
-
-                        Actifs
-
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- SERVICES --}}
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="admin-info-card">
-
-                <div class="admin-info-header">
-
-
-                    <div class="admin-info-icon">
-
-                        <i class="bi bi-diagram-3"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <h5 class="admin-info-title">
-                            Services
-                        </h5>
-
-                        <p class="admin-info-text">
-                            Services disponibles pour les stages
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="admin-info-value">
-
-                    {{ $totalServices }}
-
-                </div>
-
-
-                <div class="admin-info-footer">
-
-                    <span>
-                        Service(s)
-                    </span>
-
-
-                    <span class="text-primary">
-
-                        <i class="bi bi-building me-1"></i>
-
-                        ABHOER
-
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    {{-- =====================================================
-         ACTIONS RAPIDES
-    ====================================================== --}}
-
-    <div class="admin-section-card mt-4">
-
-
-        <div class="admin-section-header">
-
-            <div>
-
-                <h5 class="admin-section-title">
-                    Actions rapides
-                </h5>
-
-                <p class="admin-section-description">
-                    Accédez rapidement aux principales fonctions
-                    d'administration.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="row g-3">
-
-
-            {{-- GERER UTILISATEURS --}}
-
-            <div class="col-xl-4 col-md-6">
-
-                <a
-                    href="{{ route('admin.utilisateurs.index') }}"
-                    class="admin-action"
-                >
-
-                    <div class="admin-action-icon">
-
-                        <i class="bi bi-people"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="admin-action-title">
-                            Gérer les utilisateurs
-                        </div>
-
-                        <div class="admin-action-text">
-                            Consulter et gérer les comptes
-                        </div>
-
-                    </div>
-
-
-                    <i class="bi bi-chevron-right ms-auto"></i>
-
-                </a>
-
-            </div>
-
-
-            {{-- AJOUTER UTILISATEUR --}}
-
-            <div class="col-xl-4 col-md-6">
-
-                <a
-                    href="{{ route('admin.utilisateurs.create') }}"
-                    class="admin-action"
-                >
-
-                    <div class="admin-action-icon">
-
-                        <i class="bi bi-person-plus"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="admin-action-title">
-                            Ajouter un utilisateur
-                        </div>
-
-                        <div class="admin-action-text">
-                            Créer un nouveau compte
-                        </div>
-
-                    </div>
-
-
-                    <i class="bi bi-chevron-right ms-auto"></i>
-
-                </a>
-
-            </div>
-
-
-            {{-- VOIR LES DEMANDES --}}
-
-            <div class="col-xl-4 col-md-6">
-
-                <a
-                    href="{{ route('admin.demandes.index') }}"
-                    class="admin-action"
-                >
-
-                    <div class="admin-action-icon">
-
-                        <i class="bi bi-file-earmark-text"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="admin-action-title">
-                            Voir les demandes
-                        </div>
-
-                        <div class="admin-action-text">
-                            Consulter les demandes de stage
-                        </div>
-
-                    </div>
-
-
-                    <i class="bi bi-chevron-right ms-auto"></i>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
+    <div class="ad-hero-quote">« Ensemble pour<br>une gestion durable<br>de l'eau »</div>
 </div>
 
-
-<style>
-
-
-    /* =====================================================
-       STATISTIQUES
-    ====================================================== */
-
-    .admin-stat-card {
-
-        background: #ffffff;
-
-        border: 1px solid #e8edf3;
-
-        border-radius: 16px;
-
-        min-height: 155px;
-
-        padding: 24px;
-
-        box-shadow:
-            0 5px 20px rgba(23, 32, 51, .045);
-
-        transition:
-            transform .2s ease,
-            box-shadow .2s ease;
-    }
-
-
-    .admin-stat-card:hover {
-
-        transform: translateY(-3px);
-
-        box-shadow:
-            0 12px 30px rgba(23, 32, 51, .08);
-    }
-
-
-    .admin-stat-content {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: flex-start;
-
-        height: 100%;
-    }
-
-
-    .admin-stat-label {
-
-        color: #697386;
-
-        font-size: 13px;
-
-        font-weight: 600;
-
-        margin-bottom: 8px;
-    }
-
-
-    .admin-stat-number {
-
-        color: #176f78;
-
-        font-size: 34px;
-
-        line-height: 1;
-
-        font-weight: 800;
-    }
-
-
-    .admin-stat-description {
-
-        color: #9aa3b2;
-
-        font-size: 12px;
-
-        margin-top: 9px;
-    }
-
-
-    .admin-stat-icon {
-
-        width: 52px;
-        height: 52px;
-
-        border-radius: 14px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 22px;
-    }
-
-
-    .icon-primary {
-
-        color: #176f78;
-
-        background: #e7f6f7;
-    }
-
-
-    .icon-warning {
-
-        color: #d97706;
-
-        background: #fff5df;
-    }
-
-
-    .icon-success {
-
-        color: #16a34a;
-
-        background: #eaf8ef;
-    }
-
-
-    .icon-danger {
-
-        color: #dc2626;
-
-        background: #fff0f1;
-    }
-
-
-    /* =====================================================
-       INFO CARDS
-    ====================================================== */
-
-    .admin-info-card {
-
-        background: #ffffff;
-
-        border: 1px solid #e8edf3;
-
-        border-radius: 16px;
-
-        padding: 24px;
-
-        box-shadow:
-            0 5px 20px rgba(23, 32, 51, .045);
-
-        transition:
-            transform .2s ease,
-            box-shadow .2s ease;
-    }
-
-
-    .admin-info-card:hover {
-
-        transform: translateY(-2px);
-
-        box-shadow:
-            0 10px 26px rgba(23, 32, 51, .07);
-    }
-
-
-    .admin-info-header {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 14px;
-    }
-
-
-    .admin-info-icon {
-
-        width: 46px;
-        height: 46px;
-
-        border-radius: 12px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        background: #e7f6f7;
-
-        color: #176f78;
-
-        font-size: 20px;
-    }
-
-
-    .admin-info-title {
-
-        margin: 0;
-
-        font-size: 16px;
-
-        font-weight: 750;
-
-        color: #172033;
-    }
-
-
-    .admin-info-text {
-
-        margin: 3px 0 0;
-
-        font-size: 12px;
-
-        color: #8993a4;
-    }
-
-
-    .admin-info-value {
-
-        font-size: 35px;
-
-        font-weight: 800;
-
-        color: #176f78;
-
-        margin-top: 25px;
-    }
-
-
-    .admin-info-footer {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-
-        margin-top: 15px;
-
-        padding-top: 14px;
-
-        border-top: 1px solid #eef1f5;
-
-        font-size: 12px;
-
-        color: #8993a4;
-    }
-
-
-    .admin-link {
-
-        text-decoration: none;
-
-        color: #176f78;
-
-        font-weight: 700;
-    }
-
-
-    .admin-link:hover {
-
-        color: #0e535a;
-    }
-
-
-    /* =====================================================
-       SECTION
-    ====================================================== */
-
-    .admin-section-card {
-
-        background: #ffffff;
-
-        border: 1px solid #e8edf3;
-
-        border-radius: 16px;
-
-        padding: 24px;
-
-        box-shadow:
-            0 5px 20px rgba(23, 32, 51, .045);
-    }
-
-
-    .admin-section-header {
-
-        margin-bottom: 20px;
-    }
-
-
-    .admin-section-title {
-
-        margin: 0;
-
-        font-size: 17px;
-
-        font-weight: 750;
-    }
-
-
-    .admin-section-description {
-
-        color: #8993a4;
-
-        font-size: 13px;
-
-        margin: 5px 0 0;
-    }
-
-
-    /* =====================================================
-       ACTIONS
-    ====================================================== */
-
-    .admin-action {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 14px;
-
-        width: 100%;
-
-        padding: 16px;
-
-        background: #f8fafc;
-
-        border: 1px solid #edf1f5;
-
-        border-radius: 12px;
-
-        text-decoration: none;
-
-        color: #172033;
-
-        transition:
-            background .2s ease,
-            border-color .2s ease,
-            transform .2s ease;
-    }
-
-
-    .admin-action:hover {
-
-        background: #f0f8f9;
-
-        border-color: #c9e7e8;
-
-        color: #176f78;
-
-        transform: translateX(2px);
-    }
-
-
-    .admin-action-icon {
-
-        width: 42px;
-        height: 42px;
-
-        border-radius: 11px;
-
-        background: #e7f6f7;
-
-        color: #176f78;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 18px;
-
-        flex-shrink: 0;
-    }
-
-
-    .admin-action-title {
-
-        font-size: 13px;
-
-        font-weight: 750;
-    }
-
-
-    .admin-action-text {
-
-        font-size: 11px;
-
-        color: #8993a4;
-
-        margin-top: 2px;
-    }
-
-
-    .admin-action > .bi-chevron-right {
-
-        color: #a0a9b7;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-    ====================================================== */
-
-    @media (max-width: 768px) {
-
-        .admin-stat-card,
-        .admin-info-card,
-        .admin-section-card {
-
-            padding: 20px;
-        }
-
-    }
-
-</style>
+@if(session('success'))
+    <div class="alert ad-alert mb-4"><i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}</div>
+@endif
+
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <a href="{{ route('admin.demandes.index') }}" class="card ad-stat-card c-teal text-decoration-none d-block">
+            <div class="ad-stat-top">
+                <div class="ad-stat-icon-circle bg-teal"><i class="bi bi-file-earmark-text-fill"></i></div>
+                <div class="ad-stat-chevron-circle"><i class="bi bi-chevron-right"></i></div>
+            </div>
+            <div class="ad-stat-title">Total demandes</div>
+            <div class="ad-stat-num">{{ $totalDemandes }}</div>
+            <div class="ad-stat-label">Demandes enregistrées</div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a href="{{ route('admin.demandes.index') }}?statut=EN_ATTENTE" class="card ad-stat-card c-amber text-decoration-none d-block">
+            <div class="ad-stat-top">
+                <div class="ad-stat-icon-circle bg-amber"><i class="bi bi-hourglass-split"></i></div>
+                <div class="ad-stat-chevron-circle"><i class="bi bi-chevron-right"></i></div>
+            </div>
+            <div class="ad-stat-title">En attente</div>
+            <div class="ad-stat-num">{{ $demandesEnAttente }}</div>
+            <div class="ad-stat-label">À traiter</div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a href="{{ route('admin.demandes.index') }}?statut=ACCEPTEE" class="card ad-stat-card c-green text-decoration-none d-block">
+            <div class="ad-stat-top">
+                <div class="ad-stat-icon-circle bg-green"><i class="bi bi-check-circle-fill"></i></div>
+                <div class="ad-stat-chevron-circle"><i class="bi bi-chevron-right"></i></div>
+            </div>
+            <div class="ad-stat-title">Acceptées</div>
+            <div class="ad-stat-num">{{ $demandesAcceptees }}</div>
+            <div class="ad-stat-label">Demandes acceptées</div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <a href="{{ route('admin.demandes.index') }}?statut=REFUSEE" class="card ad-stat-card c-red text-decoration-none d-block">
+            <div class="ad-stat-top">
+                <div class="ad-stat-icon-circle bg-red"><i class="bi bi-x-circle-fill"></i></div>
+                <div class="ad-stat-chevron-circle"><i class="bi bi-chevron-right"></i></div>
+            </div>
+            <div class="ad-stat-title">Refusées</div>
+            <div class="ad-stat-num">{{ $demandesRefusees }}</div>
+            <div class="ad-stat-label">Demandes refusées</div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-xl-4 col-md-6">
+        <div class="card ad-info-card">
+            <i class="bi bi-people-fill ad-info-deco"></i>
+            <div class="d-flex align-items-center gap-3">
+                <div class="ad-info-icon"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <div class="ad-info-title">Utilisateurs</div>
+                    <div class="ad-info-text">Comptes enregistrés sur la plateforme</div>
+                </div>
+            </div>
+            <div class="ad-info-value">{{ $totalUtilisateurs }}</div>
+            <div class="ad-info-footer">
+                <span>Utilisateur(s)</span>
+                <a href="{{ route('admin.utilisateurs.index') }}">Gérer <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card ad-info-card">
+            <i class="bi bi-person-badge-fill ad-info-deco"></i>
+            <div class="d-flex align-items-center gap-3">
+                <div class="ad-info-icon"><i class="bi bi-person-badge-fill"></i></div>
+                <div>
+                    <div class="ad-info-title">Candidats</div>
+                    <div class="ad-info-text">Étudiants inscrits dans la plateforme</div>
+                </div>
+            </div>
+            <div class="ad-info-value">{{ $totalCandidats }}</div>
+            <div class="ad-info-footer">
+                <span>Candidat(s)</span>
+                <span class="ad-info-pill"><i class="bi bi-check-circle-fill me-1"></i> Actifs</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card ad-info-card">
+            <i class="bi bi-buildings-fill ad-info-deco"></i>
+            <div class="d-flex align-items-center gap-3">
+                <div class="ad-info-icon"><i class="bi bi-diagram-3-fill"></i></div>
+                <div>
+                    <div class="ad-info-title">Services</div>
+                    <div class="ad-info-text">Services disponibles pour les stages</div>
+                </div>
+            </div>
+            <div class="ad-info-value">{{ $totalServices }}</div>
+            <div class="ad-info-footer">
+                <span>Service(s)</span>
+                <span class="ad-info-pill"><i class="bi bi-buildings me-1"></i> ABHOER</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card ad-section-card">
+    <div class="ad-section-title"><i class="bi bi-lightning-charge-fill me-2" style="color:var(--ad-teal-dark);"></i>Actions rapides</div>
+    <div class="ad-section-description">Accédez rapidement aux principales fonctions d'administration.</div>
+
+    <div class="row g-3">
+        <div class="col-xl-4 col-md-6">
+            <a href="{{ route('admin.utilisateurs.index') }}" class="ad-action">
+                <div class="ad-action-icon"><i class="bi bi-people-fill"></i></div>
+                <div><div class="ad-action-title">Gérer les utilisateurs</div><div class="ad-action-text">Consulter et gérer les comptes</div></div>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <a href="{{ route('admin.utilisateurs.create') }}" class="ad-action">
+                <div class="ad-action-icon"><i class="bi bi-person-plus-fill"></i></div>
+                <div><div class="ad-action-title">Ajouter un utilisateur</div><div class="ad-action-text">Créer un nouveau compte</div></div>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <a href="{{ route('admin.demandes.index') }}" class="ad-action">
+                <div class="ad-action-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
+                <div><div class="ad-action-title">Voir les demandes</div><div class="ad-action-text">Consulter les demandes de stage</div></div>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
 
 @endsection

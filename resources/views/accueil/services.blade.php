@@ -77,8 +77,37 @@
     }
     .svc-card h3 { font-size: 17px; font-weight: 700; color: var(--aqua-white); line-height: 1.35; margin-bottom: 10px; }
     .svc-card p { font-size: 13.5px; color: var(--aqua-text-2); line-height: 1.65; margin-bottom: 18px; }
-    .svc-card .decouvrir { font-size: 13px; font-weight: 700; color: var(--aqua-cyan); display: inline-flex; align-items: center; gap: 6px; transition: gap .2s; }
+    .svc-card .decouvrir { font-size: 13px; font-weight: 700; color: var(--aqua-cyan); display: inline-flex; align-items: center; gap: 6px; transition: gap .2s; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
     .svc-card:hover .decouvrir { gap: 10px; }
+
+    /* ---- Service detail modal ---- */
+    .svc-modal-overlay {
+        position: fixed; inset: 0; z-index: 2000; display: none;
+        align-items: center; justify-content: center; padding: 20px;
+        background: rgba(1, 10, 17, 0.72); backdrop-filter: blur(4px);
+    }
+    .svc-modal-overlay.is-open { display: flex; }
+    .svc-modal {
+        position: relative; width: 100%; max-width: 480px;
+        background: rgba(9, 27, 40, 0.95); backdrop-filter: blur(20px);
+        border: 1px solid var(--aqua-hairline); border-radius: 22px;
+        padding: 34px 30px 30px; box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+        animation: aquaFadeUp .25s ease both;
+    }
+    .svc-modal .ico {
+        width: 52px; height: 52px; border-radius: 14px;
+        background: linear-gradient(135deg, var(--aqua-turquoise), var(--aqua-blue-deep));
+        display: flex; align-items: center; justify-content: center; color: white; font-size: 22px;
+        box-shadow: 0 0 20px rgba(0,217,208,0.25);
+    }
+    .svc-modal h3 { font-size: 19px; font-weight: 700; color: var(--aqua-white); margin-bottom: 14px; }
+    .svc-modal p { font-size: 14px; color: var(--aqua-text-2); line-height: 1.7; margin: 0; }
+    .svc-modal-close {
+        position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 50%;
+        background: rgba(255,255,255,0.06); border: 1px solid var(--aqua-hairline); color: var(--aqua-white-2);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .svc-modal-close:hover { border-color: var(--aqua-cyan); color: var(--aqua-cyan); }
 
     /* ---- Mission banner ---- */
     .svc-banner-wrap { max-width: 1580px; margin: 0 auto; padding: 40px clamp(20px, 4vw, 64px) 80px; }
@@ -182,9 +211,26 @@
                         <div class="ico"><i class="bi {{ $service['icone'] }}"></i></div>
                         <h3>{{ $service['nom'] }}</h3>
                         <p>{{ $service['description'] }}</p>
-                        <span class="decouvrir">Découvrir <i class="bi bi-arrow-right"></i></span>
+                        <button
+                            type="button"
+                            class="decouvrir js-svc-decouvrir"
+                            data-nom="{{ $service['nom'] }}"
+                            data-icone="{{ $service['icone'] }}"
+                            data-detail="{{ $service['detail'] ?? $service['description'] }}"
+                        >
+                            Découvrir <i class="bi bi-arrow-right"></i>
+                        </button>
                     </div>
                 @endforeach
+            </div>
+        </div>
+
+        <div class="svc-modal-overlay" id="serviceModal" aria-hidden="true">
+            <div class="svc-modal" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">
+                <button type="button" class="svc-modal-close" id="serviceModalClose" aria-label="Fermer"><i class="bi bi-x-lg"></i></button>
+                <div class="ico mb-3" id="serviceModalIcon"><i class="bi"></i></div>
+                <h3 id="serviceModalTitle"></h3>
+                <p id="serviceModalDetail"></p>
             </div>
         </div>
 
@@ -218,3 +264,40 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var overlay = document.getElementById('serviceModal');
+        var closeBtn = document.getElementById('serviceModalClose');
+        var titleEl = document.getElementById('serviceModalTitle');
+        var detailEl = document.getElementById('serviceModalDetail');
+        var iconEl = document.getElementById('serviceModalIcon').querySelector('i');
+
+        function openModal(button) {
+            titleEl.textContent = button.getAttribute('data-nom');
+            detailEl.textContent = button.getAttribute('data-detail');
+            iconEl.className = 'bi ' + button.getAttribute('data-icone');
+            overlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            overlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.js-svc-decouvrir').forEach(function (btn) {
+            btn.addEventListener('click', function () { openModal(btn); });
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    });
+</script>
+@endpush

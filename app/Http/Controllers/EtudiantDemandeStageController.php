@@ -231,28 +231,24 @@ class EtudiantDemandeStageController extends Controller
             'observation' => null,
         ]);
 
-        /**
-         * Notifier tous les responsables qu'une nouvelle
-         * demande de stage vient d'être déposée.
-         */
-        $responsables = Utilisateur::where(
+        /*
+        |--------------------------------------------------------------------------
+        | Notifier les administrateurs et responsables.
+        |--------------------------------------------------------------------------
+        */
+
+        $destinataires = Utilisateur::whereIn(
             'role',
-            'RESPONSABLE'
+            ['ADMINISTRATEUR', 'RESPONSABLE']
         )->get();
 
-        foreach ($responsables as $responsable) {
+        foreach ($destinataires as $destinataire) {
             Notification::create([
-                'idUtilisateur' => $responsable->idUtilisateur,
+                'idUtilisateur' => $destinataire->idUtilisateur,
                 'idDemande' => $demande->idDemande,
                 'titre' => 'Nouvelle demande de stage',
-                'message' =>
-                    'Une nouvelle demande de stage (' .
-                    $numeroDemande .
-                    ') vient d\'être déposée par ' .
-                    $candidat->prenom . ' ' . $candidat->nom .
-                    '.',
+                'message' => "{$candidat->prenom} {$candidat->nom} a déposé une nouvelle demande de stage ({$demande->numeroDemande}).",
                 'type' => 'INFO',
-                'lu' => false,
             ]);
         }
 
@@ -791,15 +787,6 @@ class EtudiantDemandeStageController extends Controller
         if (!$mimeType) {
             $mimeType =
                 'application/octet-stream';
-        }
-
-        /**
-         * Nettoyer tout buffer de sortie déjà rempli
-         * (BOM, espace parasite, etc.) avant d'envoyer
-         * les octets bruts de l'image/PDF.
-         */
-        while (ob_get_level() > 0) {
-            ob_end_clean();
         }
 
         /**
