@@ -25,3 +25,18 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+# Laravel cache and temporary files
+/bootstrap/cache/*.php
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+# Database backups
+*.sql
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
